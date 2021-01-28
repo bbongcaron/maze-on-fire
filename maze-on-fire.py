@@ -4,6 +4,15 @@ import pandas as pd
 import math
 from random import random
 
+##
+#   Builds an n by n matrix of 0's and 1's representing a maze.
+#   0 : Space is invalid to move onto -> occupied
+#   1 : Space is valid to move onto -> empty
+#
+#   @param dim The given dimension to construct the dim by dim matrix
+#   @param p The probability that a matrix cell will be occupied (0 < p < 1)
+#   @return The populated matrix representing the maze
+##
 def buildMaze(dim, p):
     maze = [ [1 for col in range(dim)] for row in range(dim) ]
     for i in range(dim):
@@ -16,7 +25,14 @@ def buildMaze(dim, p):
     maze[dim - 1][dim - 1] = 1
 
     return maze
-
+##
+#   Colors in the grid representing the maze with the appropriate colors.
+#   Black : Space is invalid to move onto -> maze[i][j] = 0
+#   White : Space is valid to move onto -> maze[i][j] = 1
+#
+#   @param root The tkinter container that holds the maze
+#   @param maze The populated matrix representing the maze
+##
 def colorGrid(root, maze):
     # Offset from the top of the window in grid units
     verticalOffset = 1
@@ -50,15 +66,24 @@ def colorGrid(root, maze):
         # Having three different for loops cases avoids checking if (i,j) is (0,0) or (dim,dim) on
         # every iteration of a single inner for loop and only checks once per row (instead of
         # once per element)
-
+##
+#   Renders the established maze GUI.
+#
+#   @param maze The populated matrix representing the maze
+#   @param p The probability that a matrix cell will be occupied (0 < p < 1)
+##
 def render(maze, p):
     root = Tk()
     root.title("This Maze is on Fire")
     # This! Maze is on fi-yaaaa-a-a-a-a
+    ##
+    #   Builds a completely new maze with the same probability of a cell being occupied
+    #   as the original maze.
+    ##
     def reset():
         newMaze = buildMaze(len(maze), p)
         colorGrid(root,newMaze)
-
+    # Reset button widget to generate a new maze
     reset_button = Button(root, text="New Maze", command=reset)
     reset_button.grid(row=0, column=0, columnspan=2)
     colorGrid(root, maze)
