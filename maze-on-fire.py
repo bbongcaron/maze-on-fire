@@ -201,8 +201,10 @@ def main():
     if dim < 1:
         print("Dimension is too small to generate a maze.")
     for i in range(int(argv[3])):
+        print("Run #" + str(i+1))
         maze = buildMaze(dim, occProbability)
         performDFS(maze)
+        print("\n")
         performBFS(maze)
         print("\n")
 
