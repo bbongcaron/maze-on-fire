@@ -187,19 +187,19 @@ def BFS(root, maze):
             print(str(end_time - start_time) + "s to find a path with BFS")
             return prev
         #rightChild
-        if isValid(maze, (currentRow, currentCol + 1)) and ((currentRow, currentCol + 1) not in visited or (currentRow, currentCol + 1) not in prev):
+        if isValid(maze, (currentRow, currentCol + 1)) and ((currentRow, currentCol + 1) not in visited and (currentRow, currentCol + 1) not in fringe):
             fringe.append((currentRow, currentCol + 1))
             prev.update({(currentRow, currentCol + 1) : (currentRow, currentCol)})
         #downChild
-        if isValid(maze, (currentRow + 1, currentCol)) and ((currentRow + 1, currentCol) not in visited or (currentRow + 1, currentCol) not in prev):
+        if isValid(maze, (currentRow + 1, currentCol)) and ((currentRow + 1, currentCol) not in visited and (currentRow + 1, currentCol) not in fringe):
             fringe.append((currentRow + 1, currentCol))
             prev.update({(currentRow + 1, currentCol) : (currentRow, currentCol)})
         #leftChild
-        if isValid(maze, (currentRow, currentCol - 1)) and ((currentRow, currentCol - 1) not in visited or (currentRow, currentCol - 1) not in prev):
+        if isValid(maze, (currentRow, currentCol - 1)) and ((currentRow, currentCol - 1) not in visited and (currentRow, currentCol - 1) not in fringe):
             fringe.append((currentRow, currentCol - 1))
             prev.update({(currentRow, currentCol - 1) : (currentRow, currentCol)})
         #upChild
-        if isValid(maze, (currentRow - 1, currentCol)) and ((currentRow - 1, currentCol) not in visited or (currentRow - 1, currentCol) not in prev):
+        if isValid(maze, (currentRow - 1, currentCol)) and ((currentRow - 1, currentCol) not in visited and (currentRow - 1, currentCol) not in fringe):
             fringe.append((currentRow - 1, currentCol))
             prev.update({(currentRow - 1, currentCol) : (currentRow, currentCol)})
         ###################################################################################################
