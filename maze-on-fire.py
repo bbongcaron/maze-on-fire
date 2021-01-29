@@ -4,8 +4,8 @@ import pandas as pd
 import math
 import time
 from random import random
-cellWidth = 4
-cellHeight = 2
+cellWidth = 2
+cellHeight = 1
 ##
 #   Builds an n by n matrix of 0's and 1's representing a maze.
 #   0 : Space is invalid to move onto -> occupied
@@ -46,6 +46,7 @@ def colorPath(root, maze, prev):
         numMoves += 1
     # Loop and label the moves taken in order
     currentSpace = (len(maze) - 1, len(maze) - 1)
+    reportedMoves = numMoves
     # Label the Goal Space appropriately
     Label(root,width=cellWidth, height=cellHeight,text=str(numMoves) + " (G)",bg="grey",relief="sunken").grid(row=currentSpace[0],column=currentSpace[1])
     currentSpace = prev[currentSpace]
@@ -58,7 +59,7 @@ def colorPath(root, maze, prev):
     # Label the Start space appropriately
     Label(root,width=cellWidth, height=cellHeight,text=str(numMoves) + "(S)",bg="grey",relief="sunken").grid(row=currentSpace[0],column=currentSpace[1])
     print("Success")
-    return
+    return reportedMoves
 ##
 #   Colors in the grid representing the maze with the appropriate colors.
 #   Black : Space is invalid to move onto -> maze[i][j] = 0
@@ -166,6 +167,7 @@ def DFS(root, maze):
 #   Performs a Breadth First Search at the maze, starting with (0,0) to seek the Goal space.
 #
 #
+#
 ##
 def BFS(root, maze):
     fringe = [(0,0)]
@@ -229,14 +231,16 @@ def render(dim, p):
     def performDFS():
         colorGrid(root,maze)
         prev = DFS(root, maze)
-        colorPath(root, maze, prev)
+        steps = colorPath(root, maze, prev)
+        print(str(steps) + " steps taken to reach the end.")
     # DFS button widget to perform DFS
     dfs_button = Button(root, width=cellWidth*colSpan, text="DFS", command=performDFS)
     dfs_button.grid(row=len(maze), column=2, columnspan=colSpan)
     def performBFS():
         colorGrid(root,maze)
         prev = BFS(root, maze)
-        colorPath(root,maze,prev)
+        steps = colorPath(root,maze,prev)
+        print(str(steps) + " steps taken to reach the end.")
     # BFS button widget to perform BFS
     bfs_button = Button(root, width=cellWidth*colSpan, text="BFS", command=performBFS)
     bfs_button.grid(row=len(maze), column=4, columnspan=colSpan)
