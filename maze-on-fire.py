@@ -163,6 +163,54 @@ def DFS(root, maze):
             Label(root,width=cellWidth, height=cellHeight,bg="light grey",relief="sunken").grid(row=currentRow,column=currentCol)
     return None
 ##
+#   Performs a Breadth First Search at the maze, starting with (0,0) to seek the Goal space.
+#
+#
+##
+def BFS(root, maze):
+    fringe = [(0,0)]
+    visited = []
+    prev = {(0,0) : None}
+    Label(root,width=cellWidth, height=cellHeight,text="S",bg="light grey",relief="sunken").grid(row=0,column=0)
+    start_time = time.time()
+    while fringe:
+        (currentRow, currentCol) = fringe.pop(0)
+        #takes off the first position coordinate off of fringe, acts as dequeue.
+        #####################################
+        # Checks the condition of the child #
+        #####################################
+        if (currentRow, currentCol) == (len(maze) - 1, len(maze) - 1):
+            Label(root,width=cellWidth, height=cellHeight, text="G", bg="light grey",relief="sunken").grid(row=currentRow,column=currentCol)
+            end_time = time.time()
+            print(str(end_time - start_time) + "s to find a path with BFS")
+            return prev
+        #rightChild
+        if isValid(maze, (currentRow, currentCol + 1)) and (currentRow, currentCol + 1) not in visited:
+            fringe.append((currentRow, currentCol + 1))
+            prev.update({(currentRow, currentCol + 1) : (currentRow, currentCol)})
+        #downChild
+        if isValid(maze, (currentRow + 1, currentCol)) and (currentRow + 1, currentCol) not in visited:
+            fringe.append((currentRow + 1, currentCol))
+            prev.update({(currentRow + 1, currentCol) : (currentRow, currentCol)})
+        #leftChild
+        if isValid(maze, (currentRow, currentCol - 1)) and (currentRow, currentCol - 1) not in visited:
+            fringe.append((currentRow, currentCol - 1))
+            prev.update({(currentRow, currentCol - 1) : (currentRow, currentCol)})
+        #upChild
+        if isValid(maze, (currentRow - 1, currentCol)) and (currentRow - 1, currentCol) not in visited:
+            fringe.append((currentRow - 1, currentCol))
+            prev.update({(currentRow - 1, currentCol) : (currentRow, currentCol)})
+        ###################################################################################################
+        # Order is (right, down, left, up), the reverse of the DFS. Chosen so upon dequeuing (in this case
+        # fringe.pop(0)), it will prioritize going towards the goal per layer of the search before looking
+        # left or up.
+        ###################################################################################################
+        visited.append((currentRow, currentCol))
+        #To not overwrite the "S" on the Start space
+        if (currentRow, currentCol) != (0,0):
+            Label(root, width=cellWidth, height=cellHeight, bg="light grey", relief="sunken").grid(row=currentRow,column=currentCol)
+    return None
+##
 #   Renders the established maze GUI.
 #
 #   @param dim The
@@ -179,11 +227,19 @@ def render(dim, p):
     #   as the original maze.
     ##
     def performDFS():
+        colorGrid(root,maze)
         prev = DFS(root, maze)
         colorPath(root, maze, prev)
     # DFS button widget to perform DFS
     dfs_button = Button(root, width=cellWidth*colSpan, text="DFS", command=performDFS)
     dfs_button.grid(row=len(maze), column=2, columnspan=colSpan)
+    def performBFS():
+        colorGrid(root,maze)
+        prev = BFS(root, maze)
+        colorPath(root,maze,prev)
+    # BFS button widget to perform BFS
+    bfs_button = Button(root, width=cellWidth*colSpan, text="BFS", command=performBFS)
+    bfs_button.grid(row=len(maze), column=4, columnspan=colSpan)
     def stop():
         root.destroy()
     stop_button = Button(root, width=cellWidth*colSpan, text="Close", command=stop)
