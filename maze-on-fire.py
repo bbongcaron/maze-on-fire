@@ -4,8 +4,6 @@ import pandas as pd
 import math
 import time
 from random import random
-cellWidth = 2
-cellHeight = 1
 ##
 #   Builds an n by n matrix of 0's and 1's representing a maze.
 #   0 : Space is invalid to move onto -> occupied
@@ -30,13 +28,13 @@ def buildMaze(dim, p):
 #   Colors the path found by the serach algorithm chosen with a grey color.
 #   Starts coloring at Goal space and backtracks through previous spaces to reach Start space.
 #
-#   @param root The tkinter container that holds the maze
 #   @param maze The populated matrix representing the maze
+#   @param prev The populated dictionary representing the previously accessed space for all spaces
 ##
-def colorPath(maze, prev):
+def tracePath(maze, prev):
     # prev is None when a search algorithm has failed to find a path
     if prev is None:
-        print("No solution")
+        #print("No solution")
         return
     # Loop and count the number of moves in the path found by the search algorithm
     numMoves = 0
@@ -45,27 +43,8 @@ def colorPath(maze, prev):
         currentSpace = prev[currentSpace]
         numMoves += 1
     # Loop and label the moves taken in order
-    currentSpace = (len(maze) - 1, len(maze) - 1)
-    reportedMoves = numMoves
-    # Label the Goal Space appropriately
-    currentSpace = prev[currentSpace]
-    numMoves -= 1
-    # Loop through previous spaces until the Start space is reached
-    while currentSpace != (0,0):
-        currentSpace = prev[currentSpace]
-        numMoves -= 1
-    # Label the Start space appropriately
-    print("Success")
-    return reportedMoves
-##
-#   Colors in the grid representing the maze with the appropriate colors.
-#   Black : Space is invalid to move onto -> maze[i][j] = 0
-#   White : Space is valid to move onto -> maze[i][j] = 1
-#
-#   @param root The tkinter container that holds the maze
-#   @param maze The populated matrix representing the maze
-##
-
+    #print("Success")
+    return numMoves
 ##
 #   Checks if a space in the maze is "valid".
 #       => Is not an obstructed spaces
@@ -83,9 +62,6 @@ def isValid(maze, coordinate):
 ##
 #   Performs a Depth-First Search on the maze starting at (0,0) to seek the Goal space.
 #
-#   In addition, colors spaces of the maze grid that have been in the fringe at some point in time.
-#
-#   @param root The tkinter container that holds the maze
 #   @param maze The populated matrix representing the maze
 ##
 def DFS(maze):
@@ -100,7 +76,8 @@ def DFS(maze):
         ######################################
         if (currentRow, currentCol) == (len(maze) - 1, len(maze) - 1):
             end_time = time.time()
-            print(str(end_time - start_time) + "s to find path with DFS")
+            elapsed_time = end_time - start_time
+            #print(str(elapsed_time) + "s to find path with DFS")
             return prev
         #upChild
         if isValid(maze, (currentRow - 1, currentCol)) and (currentRow - 1, currentCol) not in visited:
@@ -128,8 +105,7 @@ def DFS(maze):
 ##
 #   Performs a Breadth First Search at the maze, starting with (0,0) to seek the Goal space.
 #
-#
-#
+#   @param maze The populated matrix representing the maze
 ##
 def BFS(maze):
     fringe = [(0,0)]
@@ -144,7 +120,8 @@ def BFS(maze):
         #####################################
         if (currentRow, currentCol) == (len(maze) - 1, len(maze) - 1):
             end_time = time.time()
-            print(str(end_time - start_time) + "s to find a path with BFS")
+            elapsed_time = end_time - start_time
+            #print(str(elapsed_time) + "s to find path with DFS")
             return prev
         #rightChild
         if isValid(maze, (currentRow, currentCol + 1)) and ((currentRow, currentCol + 1) not in visited and (currentRow, currentCol + 1) not in fringe):
@@ -170,43 +147,59 @@ def BFS(maze):
         visited.append((currentRow, currentCol))
     return None
 ##
-#   Renders the established maze GUI.
+#   Starts DFS
 #
-#   @param dim The
-#   @param p The probability that a matrix cell will be occupied (0 < p < 1)
+#   @param maze The populated matrix representing the maze
 ##
-
-    # This! Maze is on fi-yaaaa-a-a-a-a
-    ##
-    #   Builds a completely new maze with the same probability of a cell being occupied
-    #   as the original maze.
-    ##
 def performDFS(maze):
     prev = DFS(maze)
-    steps = colorPath(maze, prev)
-    print(str(steps) + " steps taken to reach the end.")
+    steps = tracePath(maze, prev)
+    if prev is None:
+        return False
+    return True
+    #print(str(steps) + " steps taken to reach the end.")
+##
+#   Starts BFS
+#
+#   @param maze The populated matrix representing the maze
+##
 def performBFS(maze):
     prev = BFS(maze)
-    steps = colorPath(maze,prev)
+    steps = tracePath(maze,prev)
     print(str(steps) + " steps taken to reach the end.")
 ##
 #   Driver function
 ##
 def main():
+    dim = int(argv[1])
     occProbability = float(argv[2])
+    numRunsPerP = int(argv[3])
     if occProbability >= 1 or occProbability <= 0:
         print("Invalid p. [0 < p < 1].")
         return
-    dim = int(argv[1])
     if dim < 1:
         print("Dimension is too small to generate a maze.")
-    for i in range(int(argv[3])):
-        print("Run #" + str(i+1))
-        maze = buildMaze(dim, occProbability)
-        performDFS(maze)
-        print("\n")
-        performBFS(maze)
-        print("\n")
+        return
+    p_vs_successRate = []
+    p = occProbability
+    while p < 1:
+        print("Currently testing p = " + str(p) + "...")
+        isSuccess = [False for x in range(numRunsPerP)]
+        for i in range(numRunsPerP):
+            maze = buildMaze(dim, p)
+            isSuccess[i] = performDFS(maze)
+            #print("\n")
+            #performBFS(maze)
+            #print("\n")
+        numSuccesses = 0
+        for result in isSuccess:
+            if result:
+                numSuccesses += 1
+        successRate = float(numSuccesses / numRunsPerP)
+        p_vs_successRate.append((p, successRate))
+        p = round(p + 0.1, 1)
+    for element in p_vs_successRate:
+        print(element)
 
 if __name__ == '__main__':
     main()
