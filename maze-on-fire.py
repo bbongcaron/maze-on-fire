@@ -170,6 +170,28 @@ def BFS(maze):
         visited.append((currentRow, currentCol))
     return None
 ##
+#
+##
+def fireSpread(maze, occProbability):
+    counted = []
+    for currentRow in range(len(maze)):
+        for currentCol in range(len(maze)):
+            if (maze[currentRow][currentCol] == 1) and (currentRow, currentCol) not in counted:
+               k = 0
+               if (maze[currentRow - 1][currentCol] == 0) and isValid(maze, (currentRow - 1, currentCol)):
+                   k += 1
+               if (maze[currentRow][currentCol - 1] == 0) and isValid(maze, (currentRow, currentCol - 1)):
+                   k += 1
+               if (maze[currentRow + 1][currentCol] == 0) and isValid(maze, (currentRow + 1, currentCol)):
+                   k += 1
+               if (maze[currentRow][currentCol + 1] == 0) and isValid(maze, (currentRow, currentCol + 1)):
+                   k += 1
+               fireProb = 1 - pow((1 - occProbability),k)
+               if random() <= fireProb:
+                   maze[currentRow][currentCol] == 0
+               counted.append((currentRow, currentCol))
+    return maze
+##
 #   Renders the established maze GUI.
 #
 #   @param dim The
