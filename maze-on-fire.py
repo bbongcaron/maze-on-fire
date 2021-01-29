@@ -33,7 +33,7 @@ def buildMaze(dim, p):
 #   @param root The tkinter container that holds the maze
 #   @param maze The populated matrix representing the maze
 ##
-def colorPath(root, maze, prev):
+def colorPath(maze, prev):
     # prev is None when a search algorithm has failed to find a path
     if prev is None:
         print("No solution")
@@ -48,16 +48,13 @@ def colorPath(root, maze, prev):
     currentSpace = (len(maze) - 1, len(maze) - 1)
     reportedMoves = numMoves
     # Label the Goal Space appropriately
-    Label(root,width=cellWidth, height=cellHeight,text=str(numMoves) + " (G)",bg="grey",relief="sunken").grid(row=currentSpace[0],column=currentSpace[1])
     currentSpace = prev[currentSpace]
     numMoves -= 1
     # Loop through previous spaces until the Start space is reached
     while currentSpace != (0,0):
-        Label(root,width=cellWidth, height=cellHeight,text=str(numMoves),bg="grey",relief="sunken").grid(row=currentSpace[0],column=currentSpace[1])
         currentSpace = prev[currentSpace]
         numMoves -= 1
     # Label the Start space appropriately
-    Label(root,width=cellWidth, height=cellHeight,text=str(numMoves) + "(S)",bg="grey",relief="sunken").grid(row=currentSpace[0],column=currentSpace[1])
     print("Success")
     return reportedMoves
 ##
@@ -68,37 +65,7 @@ def colorPath(root, maze, prev):
 #   @param root The tkinter container that holds the maze
 #   @param maze The populated matrix representing the maze
 ##
-def colorGrid(root, maze):
-    # Offset from the top of the window in grid units
-    verticalOffset = 0
-    for i in range(len(maze)):
-        # White = empty, Black = filled
-        # Adjust for loop to skip top left corner (0,0)
-        if i == 0:
-            Label(root,width=cellWidth, height=cellHeight,bg="white",relief="sunken",text="S").grid(row=0+verticalOffset,column=0)
-            for j in range(1, len(maze[0])):
-                if maze[i][j]:
-                    Label(root,width=cellWidth, height=cellHeight,bg="white",relief="sunken").grid(row=i+verticalOffset,column=j)
-                else:
-                    Label(root,width=cellWidth, height=cellHeight,bg="black",relief="sunken").grid(row=i+verticalOffset,column=j)
-        # Adjust for loop to skip bottom right corner (dim, dim)
-        elif i == len(maze) - 1:
-            Label(root,width=cellWidth, height=cellHeight,bg="white",relief="sunken",text="G").grid(row=i+verticalOffset,column=j)
-            for j in range(len(maze[0]) - 1):
-                if maze[i][j]:
-                    Label(root,width=cellWidth, height=cellHeight,bg="white",relief="sunken").grid(row=i+verticalOffset,column=j)
-                else:
-                    Label(root,width=cellWidth, height=cellHeight,bg="black",relief="sunken").grid(row=i+verticalOffset,column=j)
-        # For loop for "normal" rows without the Start or Goal space
-        else:
-            for j in range(len(maze[0])):
-                if maze[i][j]:
-                    Label(root,width=cellWidth, height=cellHeight,bg="white",relief="sunken").grid(row=i+verticalOffset,column=j)
-                else:
-                    Label(root,width=cellWidth, height=cellHeight,bg="black",relief="sunken").grid(row=i+verticalOffset,column=j)
-        # Having three different for loops cases avoids checking if (i,j) is (0,0) or (dim,dim) on
-        # every iteration of a single inner for loop and only checks once per row (instead of
-        # once per element)
+
 ##
 #   Checks if a space in the maze is "valid".
 #       => Is not an obstructed spaces
@@ -121,11 +88,10 @@ def isValid(maze, coordinate):
 #   @param root The tkinter container that holds the maze
 #   @param maze The populated matrix representing the maze
 ##
-def DFS(root, maze):
+def DFS(maze):
     fringe = [(0,0)]
     visited = []
     prev = {(0,0) : None}
-    Label(root,width=cellWidth, height=cellHeight,text="S",bg="light grey",relief="sunken").grid(row=0,column=0)
     start_time = time.time()
     while fringe:
         (currentRow, currentCol) = fringe.pop()
@@ -133,7 +99,6 @@ def DFS(root, maze):
         # Check the children of currentState #
         ######################################
         if (currentRow, currentCol) == (len(maze) - 1, len(maze) - 1):
-            Label(root,width=cellWidth, height=cellHeight, text="G", bg="light grey",relief="sunken").grid(row=currentRow,column=currentCol)
             end_time = time.time()
             print(str(end_time - start_time) + "s to find path with DFS")
             return prev
@@ -159,9 +124,6 @@ def DFS(root, maze):
         # before any moves up or left.
         #################################################################################################
         visited.append((currentRow, currentCol))
-        # Don't want to overwrite the "S" on the Start space
-        if (currentRow, currentCol) != (0,0):
-            Label(root,width=cellWidth, height=cellHeight,bg="light grey",relief="sunken").grid(row=currentRow,column=currentCol)
     return None
 ##
 #   Performs a Breadth First Search at the maze, starting with (0,0) to seek the Goal space.
@@ -169,11 +131,10 @@ def DFS(root, maze):
 #
 #
 ##
-def BFS(root, maze):
+def BFS(maze):
     fringe = [(0,0)]
     visited = []
     prev = {(0,0) : None}
-    Label(root,width=cellWidth, height=cellHeight,text="S",bg="light grey",relief="sunken").grid(row=0,column=0)
     start_time = time.time()
     while fringe:
         (currentRow, currentCol) = fringe.pop(0)
@@ -182,7 +143,6 @@ def BFS(root, maze):
         # Checks the condition of the child #
         #####################################
         if (currentRow, currentCol) == (len(maze) - 1, len(maze) - 1):
-            Label(root,width=cellWidth, height=cellHeight, text="G", bg="light grey",relief="sunken").grid(row=currentRow,column=currentCol)
             end_time = time.time()
             print(str(end_time - start_time) + "s to find a path with BFS")
             return prev
@@ -208,9 +168,6 @@ def BFS(root, maze):
         # left or up.
         ###################################################################################################
         visited.append((currentRow, currentCol))
-        #To not overwrite the "S" on the Start space
-        if (currentRow, currentCol) != (0,0):
-            Label(root, width=cellWidth, height=cellHeight, bg="light grey", relief="sunken").grid(row=currentRow,column=currentCol)
     return None
 ##
 #   Renders the established maze GUI.
@@ -218,39 +175,20 @@ def BFS(root, maze):
 #   @param dim The
 #   @param p The probability that a matrix cell will be occupied (0 < p < 1)
 ##
-def render(dim, p):
-    colSpan = 2
-    maze = buildMaze(dim, p)
-    root = Tk()
-    root.title("This Maze is on Fire")
+
     # This! Maze is on fi-yaaaa-a-a-a-a
     ##
     #   Builds a completely new maze with the same probability of a cell being occupied
     #   as the original maze.
     ##
-    def performDFS():
-        colorGrid(root,maze)
-        prev = DFS(root, maze)
-        steps = colorPath(root, maze, prev)
-        print(str(steps) + " steps taken to reach the end.")
-    # DFS button widget to perform DFS
-    dfs_button = Button(root, width=cellWidth*colSpan, text="DFS", command=performDFS)
-    dfs_button.grid(row=len(maze), column=2, columnspan=colSpan)
-    def performBFS():
-        colorGrid(root,maze)
-        prev = BFS(root, maze)
-        steps = colorPath(root,maze,prev)
-        print(str(steps) + " steps taken to reach the end.")
-    # BFS button widget to perform BFS
-    bfs_button = Button(root, width=cellWidth*colSpan, text="BFS", command=performBFS)
-    bfs_button.grid(row=len(maze), column=4, columnspan=colSpan)
-    def stop():
-        root.destroy()
-    stop_button = Button(root, width=cellWidth*colSpan, text="Close", command=stop)
-    stop_button.grid(row=len(maze), column=0, columnspan=colSpan)
-
-    colorGrid(root, maze)
-    root.mainloop()
+def performDFS(maze):
+    prev = DFS(maze)
+    steps = colorPath(maze, prev)
+    print(str(steps) + " steps taken to reach the end.")
+def performBFS(maze):
+    prev = BFS(maze)
+    steps = colorPath(maze,prev)
+    print(str(steps) + " steps taken to reach the end.")
 ##
 #   Driver function
 ##
@@ -262,7 +200,11 @@ def main():
     dim = int(argv[1])
     if dim < 1:
         print("Dimension is too small to generate a maze.")
-    render(dim, occProbability)
+    for i in range(int(argv[3])):
+        maze = buildMaze(dim, occProbability)
+        performDFS(maze)
+        performBFS(maze)
+        print("\n")
 
 if __name__ == '__main__':
     main()
