@@ -1,16 +1,15 @@
-from maze import *
+from render import *
 from matplotlib.pyplot import figure
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 ##
-#   Generates data and plot for obstacle density p vs. probability that S can be reached from G
+#   Generates data and plot for obstacle density p vs. probability that S can be reached from G (Problem 2)
 #
 #   @param dim The given dimension to construct the dim by dim matrix
 #   @param numRunsPerP The number of times a maze is generated and tested for each obstacle density
 ##
 def pVSsuccessRateDFS(dim, numRunsPerP):
-
     successRates = []
     obstacle_density = []
     p = 0.0
@@ -71,7 +70,8 @@ def main():
     # For now range(1), will be changed
     for i in range(1):
         print("Run #" + str(i+1))
-        maze = buildMaze(dim, occProbability, fireProbability)
+        #maze = buildMaze(dim, occProbability, fireProbability)
 
 if __name__ == '__main__':
+    print("\nTo render and debug a singular maze, run 'render.py'.\nContinuing...\n")
     main()

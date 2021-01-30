@@ -15,12 +15,14 @@ from random import random
 ##
 def buildMaze(dim, p, firep=0):
     maze = [ [1 for col in range(dim)] for row in range(dim) ]
+    # Randomly arranges obstacles
     fireTile = False
     for i in range(dim):
         for j in range(dim):
             rand = random()
             if rand <= p:
                 maze[i][j] = 0
+    # Randomly selects a fire tile
     while not fireTile and firep != 0:
         for i in range(dim):
             for j in range(dim):
@@ -28,6 +30,7 @@ def buildMaze(dim, p, firep=0):
                 if fireProb <= firep and maze[i][j] == 1:
                     maze[i][j] = 2
                     fireTile = True
+                    break
             if fireTile:
                 break
     # Ensure Start and Goal spaces are empty
@@ -73,11 +76,12 @@ def isValid(maze, coordinate):
 #   Performs a Depth-First Search on the maze starting at (0,0) to seek the Goal space.
 #
 #   @param maze The populated matrix representing the maze
+#   @param start The start position of the search, default is (0,0)
 ##
-def DFS(maze):
-    fringe = [(0,0)]
+def DFS(maze,start=(0,0)):
+    fringe = [start]
     visited = []
-    prev = {(0,0) : None}
+    prev = {start : None}
     start_time = time.time()
     while fringe:
         (currentRow, currentCol) = fringe.pop()
@@ -116,11 +120,12 @@ def DFS(maze):
 #   Performs a Breadth First Search at the maze, starting with (0,0) to seek the Goal space.
 #
 #   @param maze The populated matrix representing the maze
+#   @param start The start position of the search, default is (0,0)
 ##
-def BFS(maze):
-    fringe = [(0,0)]
+def BFS(maze, start=(0,0)):
+    fringe = [start]
     visited = []
-    prev = {(0,0) : None}
+    prev = {start : None}
     start_time = time.time()
     while fringe:
         (currentRow, currentCol) = fringe.pop(0)
