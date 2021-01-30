@@ -1,8 +1,11 @@
-from tkinter import *
+from tkinter import messagebox
 from sys import *
 import pandas as pd
 import math
 import time
+from matplotlib.pyplot import figure
+import matplotlib.pyplot as plt
+import numpy as np
 from random import random
 ##
 #   Builds an n by n matrix of 0's and 1's representing a maze.
@@ -168,38 +171,67 @@ def performBFS(maze):
     steps = tracePath(maze,prev)
     print(str(steps) + " steps taken to reach the end.")
 ##
-#   Driver function
+#   Generates data and plot for obstacle density p vs. probability that S can be reached from G
+#
+#   @param dim The given dimension to construct the dim by dim matrix
+#   @param numRunsPerP The number of times a maze is generated and tested for each obstacle density
 ##
-def main():
-    dim = int(argv[1])
-    occProbability = float(argv[2])
-    numRunsPerP = int(argv[3])
-    if occProbability >= 1 or occProbability <= 0:
-        print("Invalid p. [0 < p < 1].")
-        return
-    if dim < 1:
-        print("Dimension is too small to generate a maze.")
-        return
-    p_vs_successRate = []
-    p = occProbability
+def probabilityVSsuccessRate(dim, numRunsPerP):
+    successRates = []
+    obstacle_density = []
+    p = 0.0
     while p < 1:
+        obstacle_density.append(p)
         print("Currently testing p = " + str(p) + "...")
         isSuccess = [False for x in range(numRunsPerP)]
         for i in range(numRunsPerP):
+            # Print percent progress
+            percentDone = str((i+1)*100/numRunsPerP) + "% done..."
+            print(percentDone, end="\r")
+            # Build maze and test if DFS finds a path
             maze = buildMaze(dim, p)
             isSuccess[i] = performDFS(maze)
-            #print("\n")
-            #performBFS(maze)
-            #print("\n")
         numSuccesses = 0
         for result in isSuccess:
             if result:
                 numSuccesses += 1
         successRate = float(numSuccesses / numRunsPerP)
-        p_vs_successRate.append((p, successRate))
+        successRates.append(successRate)
         p = round(p + 0.1, 1)
-    for element in p_vs_successRate:
-        print(element)
+    print("Searching and data analysis complete!")
+    ## Plot building + settings
+    fig, ax = plt.subplots(figsize=(12,8))
+    plt.rcParams["figure.figsize"] = (40,40)
+    ax.plot(obstacle_density, successRates, marker='o')
+    ax.spines['left'].set_position(('data',0))
+    ax.spines['top'].set_color('none')
+    ax.spines['right'].set_color('none')
+    ax.xaxis.set_ticks_position('bottom')
+    ax.yaxis.set_ticks_position('left')
+    ax.set_xlabel('Obstacle Density (p)')
+    ax.set_ylabel("Probability that S can be reached from G")
+    plt.xticks(np.arange(0.0, 1, 0.1))
+    plt.grid(b=True, which='major')
+    plt.minorticks_on()
+    plt.title('Obstacle density p vs. Probability that S can be reached from G \n (in ' + str(numRunsPerP) + ' unique maze runs for each obstacle density)\n w/ dim = ' + str(dim))
+    # Label point coordinates above each point
+    for xy in zip(obstacle_density, successRates):
+        ax.annotate('(%s, %s)' % xy, xy=xy, xytext=(xy[0], xy[1]+0.01), xycoords='data')
+    plt.show()
+    return
+##
+#   Driver function
+#
+#   @argv[1] The dimension of the dim by dim maze
+#   @argv[2] The number of times a maze is generated and tested for each obstacle density
+##
+def main():
+    dim = int(argv[1])
+    numRunsPerP = int(argv[2])
+    if dim < 1:
+        print("Dimension is too small to generate a maze.")
+        return
+    probabilityVSsuccessRate(dim, numRunsPerP)
 
 if __name__ == '__main__':
     main()
