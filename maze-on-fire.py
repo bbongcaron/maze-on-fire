@@ -15,20 +15,28 @@ from random import random
 #   @param dim The given dimension to construct the dim by dim matrix
 #   @param p The probability that a matrix cell will be occupied (0 < p < 1)
 #   @return The populated matrix representing the maze
+#
+#   Default firep = 0 so it does not interefere with vanilla DFS/BFS/A*
 ##
-def buildMaze(dim, p):
+def buildMaze(dim, p, firep=0):
     maze = [ [1 for col in range(dim)] for row in range(dim) ]
+    fireTile = False
     for i in range(dim):
         for j in range(dim):
             rand = random()
             if rand <= p:
                 maze[i][j] = 0
+            if not fireTile and firep > 0:
+                fireProb = random()
+                if fireProb <= firep:
+                    maze[i][j] = 2
+                    fireTile = True
     # Ensure Start and Goal spaces are empty
     maze[0][0] = 1
     maze[dim - 1][dim - 1] = 1
     return maze
 ##
-#   Colors the path found by the serach algorithm chosen with a grey color.
+#   Colors the path found by the search algorithm chosen with a grey color.
 #   Starts coloring at Goal space and backtracks through previous spaces to reach Start space.
 #
 #   @param maze The populated matrix representing the maze
@@ -149,9 +157,32 @@ def BFS(maze):
         ###################################################################################################
         visited.append((currentRow, currentCol))
     return None
+
+##
+#   Performs a probability check, seeing if a free tile will turn into fire depending on the number of fire neighbors
+#   nearby.
+##
+def fireSpread(maze, fireProbability):
+    counted = []
+    for currentRow in range(len(maze)):
+        for currentCol in range(len(maze)):
+            if (maze[currentRow][currentCol] == 1) and (currentRow, currentCol) not in counted:
+               k = 0
+               if (maze[currentRow - 1][currentCol] == 2) and isValid(maze, (currentRow - 1, currentCol)):
+                   k += 1
+               if (maze[currentRow][currentCol - 1] == 2) and isValid(maze, (currentRow, currentCol - 1)):
+                   k += 1
+               if (maze[currentRow + 1][currentCol] == 2) and isValid(maze, (currentRow + 1, currentCol)):
+                   k += 1
+               if (maze[currentRow][currentCol + 1] == 2) and isValid(maze, (currentRow, currentCol + 1)):
+                   k += 1
+               fireProb = 1 - pow((1 - fireProbability),k)
+               if random() <= fireProb:
+                   maze[currentRow][currentCol] = 2
+               counted.append((currentRow, currentCol))
+    return maze
 ##
 #   Starts DFS
-#
 #   @param maze The populated matrix representing the maze
 ##
 def performDFS(maze):
@@ -176,7 +207,7 @@ def performBFS(maze):
 #   @param dim The given dimension to construct the dim by dim matrix
 #   @param numRunsPerP The number of times a maze is generated and tested for each obstacle density
 ##
-def probabilityVSsuccessRate(dim, numRunsPerP):
+def pVSsuccessRateDFS(dim, numRunsPerP):
     successRates = []
     obstacle_density = []
     p = 0.0
@@ -224,14 +255,20 @@ def probabilityVSsuccessRate(dim, numRunsPerP):
 #
 #   @argv[1] The dimension of the dim by dim maze
 #   @argv[2] The number of times a maze is generated and tested for each obstacle density
+#   @argv[3] The probability that fire will spread to an adjacent space
 ##
 def main():
     dim = int(argv[1])
     numRunsPerP = int(argv[2])
+    fireProbability = float(argv[3])
     if dim < 1:
         print("Dimension is too small to generate a maze.")
-        return
-    probabilityVSsuccessRate(dim, numRunsPerP)
+    pVSsuccessRateDFS(dim, numRunsPerP)
+
+    # For now range(1), will be changed
+    for i in range(1):
+        print("Run #" + str(i+1))
+        maze = buildMaze(dim, occProbability, fireProbability)
 
 if __name__ == '__main__':
     main()
