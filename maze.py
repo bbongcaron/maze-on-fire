@@ -6,7 +6,7 @@ from random import random
 #   Builds an n by n matrix of 0's and 1's representing a maze.
 #   0 : Space is invalid to move onto -> occupied
 #   1 : Space is valid to move onto -> empty
-#
+#   2 : Space is on fire
 #   @param dim The given dimension to construct the dim by dim matrix
 #   @param p The probability that a matrix cell will be occupied (0 < p < 1)
 #   @return The populated matrix representing the maze
@@ -21,11 +21,15 @@ def buildMaze(dim, p, firep=0):
             rand = random()
             if rand <= p:
                 maze[i][j] = 0
-            if not fireTile and firep > 0:
+    while not fireTile and firep != 0:
+        for i in range(dim):
+            for j in range(dim):
                 fireProb = random()
-                if fireProb <= firep:
+                if fireProb <= firep and maze[i][j] == 1:
                     maze[i][j] = 2
                     fireTile = True
+            if fireTile:
+                break
     # Ensure Start and Goal spaces are empty
     maze[0][0] = 1
     maze[dim - 1][dim - 1] = 1
