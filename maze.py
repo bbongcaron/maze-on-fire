@@ -77,10 +77,10 @@ def isValid(maze, coordinate):
 #
 #   @param maze The populated matrix representing the maze
 ##
-def DFS(maze):
-    fringe = [(0,0)]
+def DFS(maze,start=(0,0)):
+    fringe = [start]
     visited = []
-    prev = {(0,0) : None}
+    prev = {start : None}
     start_time = time.time()
     while fringe:
         (currentRow, currentCol) = fringe.pop()
@@ -120,10 +120,10 @@ def DFS(maze):
 #
 #   @param maze The populated matrix representing the maze
 ##
-def BFS(maze):
-    fringe = [(0,0)]
+def BFS(maze, start=(0,0)):
+    fringe = [start]
     visited = []
-    prev = {(0,0) : None}
+    prev = {start : None}
     start_time = time.time()
     while fringe:
         (currentRow, currentCol) = fringe.pop(0)
