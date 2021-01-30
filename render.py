@@ -8,7 +8,7 @@ def grid(window, maze, numMoves=1):
     x = 0
     y = 0
     if numMoves is not None:
-        grayscale = numpy.linspace(18,238,numMoves,dtype='int')
+        grayscale = numpy.linspace(20,240,numMoves,dtype='int')
     for row in maze:
         for space in row:
             newSpace = pygame.Rect(x, y, spaceDim, spaceDim)
@@ -62,7 +62,7 @@ def redraw(window, maze):
     pygame.display.update()
 
 def render():
-    maze = buildMaze(10, 0.30, 0.1)
+    maze = buildMaze(10, 0.25, 0.1)
     agentLocation = (0,0)
     maze[0][0] = -1
 
