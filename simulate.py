@@ -70,7 +70,8 @@ def main():
     # For now range(1), will be changed
     for i in range(1):
         print("Run #" + str(i+1))
-        maze = buildMaze(dim, occProbability, fireProbability)
+        #maze = buildMaze(dim, occProbability, fireProbability)
 
 if __name__ == '__main__':
+    print("\nTo render and debug a singular maze, run 'render.py'.\nContinuing...\n")
     main()
