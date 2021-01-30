@@ -15,19 +15,26 @@ cellHeight = 1
 #   @param p The probability that a matrix cell will be occupied (0 < p < 1)
 #   @return The populated matrix representing the maze
 ##
-def buildMaze(dim, p):
+def buildMaze(dim, p, firep):
     maze = [ [1 for col in range(dim)] for row in range(dim) ]
+    fireTile = 1
     for i in range(dim):
         for j in range(dim):
             rand = random()
             if rand <= p:
                 maze[i][j] = 0
+                if fireTile > 0:
+                    fireProb = random()
+                    if fireProb <= firep:
+                        maze[i][j] = 2
+                    else:
+                        continue
     # Ensure Start and Goal spaces are empty
     maze[0][0] = 1
     maze[dim - 1][dim - 1] = 1
     return maze
 ##
-#   Colors the path found by the serach algorithm chosen with a grey color.
+#   Colors the path found by the search algorithm chosen with a grey color.
 #   Starts coloring at Goal space and backtracks through previous spaces to reach Start space.
 #
 #   @param root The tkinter container that holds the maze
@@ -170,25 +177,26 @@ def BFS(maze):
         visited.append((currentRow, currentCol))
     return None
 ##
-#
+#   Performs a probability check, seeing if a free tile will turn into fire depending on the number of fire neighbors
+#   nearby.
 ##
-def fireSpread(maze, occProbability):
+def fireSpread(maze, fireProbability):
     counted = []
     for currentRow in range(len(maze)):
         for currentCol in range(len(maze)):
             if (maze[currentRow][currentCol] == 1) and (currentRow, currentCol) not in counted:
                k = 0
-               if (maze[currentRow - 1][currentCol] == 0) and isValid(maze, (currentRow - 1, currentCol)):
+               if (maze[currentRow - 1][currentCol] == 2) and isValid(maze, (currentRow - 1, currentCol)):
                    k += 1
-               if (maze[currentRow][currentCol - 1] == 0) and isValid(maze, (currentRow, currentCol - 1)):
+               if (maze[currentRow][currentCol - 1] == 2) and isValid(maze, (currentRow, currentCol - 1)):
                    k += 1
-               if (maze[currentRow + 1][currentCol] == 0) and isValid(maze, (currentRow + 1, currentCol)):
+               if (maze[currentRow + 1][currentCol] == 2) and isValid(maze, (currentRow + 1, currentCol)):
                    k += 1
-               if (maze[currentRow][currentCol + 1] == 0) and isValid(maze, (currentRow, currentCol + 1)):
+               if (maze[currentRow][currentCol + 1] == 2) and isValid(maze, (currentRow, currentCol + 1)):
                    k += 1
-               fireProb = 1 - pow((1 - occProbability),k)
+               fireProb = 1 - pow((1 - fireProbability),k)
                if random() <= fireProb:
-                   maze[currentRow][currentCol] == 0
+                   maze[currentRow][currentCol] = 2
                counted.append((currentRow, currentCol))
     return maze
 ##
@@ -216,15 +224,16 @@ def performBFS(maze):
 ##
 def main():
     occProbability = float(argv[2])
+    fireProbability = float(argv[3])
     if occProbability >= 1 or occProbability <= 0:
         print("Invalid p. [0 < p < 1].")
         return
     dim = int(argv[1])
     if dim < 1:
         print("Dimension is too small to generate a maze.")
-    for i in range(int(argv[3])):
+    for i in range(int(argv[4])):
         print("Run #" + str(i+1))
-        maze = buildMaze(dim, occProbability)
+        maze = buildMaze(dim, occProbability, fireProbability)
         performDFS(maze)
         print("\n")
         performBFS(maze)
