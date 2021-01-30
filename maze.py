@@ -15,12 +15,14 @@ from random import random
 ##
 def buildMaze(dim, p, firep=0):
     maze = [ [1 for col in range(dim)] for row in range(dim) ]
+    # Randomly arranges obstacles
     fireTile = False
     for i in range(dim):
         for j in range(dim):
             rand = random()
             if rand <= p:
                 maze[i][j] = 0
+    # Randomly selects a fire tile
     while not fireTile and firep != 0:
         for i in range(dim):
             for j in range(dim):
@@ -28,6 +30,7 @@ def buildMaze(dim, p, firep=0):
                 if fireProb <= firep and maze[i][j] == 1:
                     maze[i][j] = 2
                     fireTile = True
+                    break
             if fireTile:
                 break
     # Ensure Start and Goal spaces are empty
