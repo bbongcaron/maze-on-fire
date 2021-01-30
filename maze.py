@@ -76,6 +76,7 @@ def isValid(maze, coordinate):
 #   Performs a Depth-First Search on the maze starting at (0,0) to seek the Goal space.
 #
 #   @param maze The populated matrix representing the maze
+#   @param start The start position of the search, default is (0,0)
 ##
 def DFS(maze,start=(0,0)):
     fringe = [start]
@@ -119,6 +120,7 @@ def DFS(maze,start=(0,0)):
 #   Performs a Breadth First Search at the maze, starting with (0,0) to seek the Goal space.
 #
 #   @param maze The populated matrix representing the maze
+#   @param start The start position of the search, default is (0,0)
 ##
 def BFS(maze, start=(0,0)):
     fringe = [start]
