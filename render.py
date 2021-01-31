@@ -13,16 +13,14 @@ def visualAstar(window, maze, start=(0,0), spacesTraveled=[]):
     start_time = time.time()
     while fringeNodes:
         #Find the node which has the lowest distance to the goal
-        lowestDistance = 0
-        index = 0
-        for i in range(len(distances)):
-            if distances[i] <= lowestDistance:
-                index = i
-                lowestDistance = distances[i]
+        lowestDistance = min(distances)
+        index = distances.index(lowestDistance)
         (currentRow, currentCol) = fringeNodes.pop(index)
         ####################### Visualize node just popped from fringe
         expandedNode = pygame.Rect(currentCol*spaceDim, currentRow*spaceDim, spaceDim, spaceDim)
         distances.pop(index)
+        distances.clear()
+        fringeNodes.clear()
         pygame.draw.rect(window, (150,150,150), expandedNode, width=0)
         pygame.draw.rect(window, (0,0,0), expandedNode, width=1)
         pygame.display.update()
