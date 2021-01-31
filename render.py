@@ -2,7 +2,11 @@ from maze import *
 import pygame, numpy, copy
 size = 360
 
+<<<<<<< HEAD
 def grid(window, maze, numMoves=None):
+=======
+def grid(window, maze, numMoves=1):
+>>>>>>> 38828214d9223c9c8e11fc8ae4eddd29ae327dd3
     dim = len(maze)
     spaceDim = size // dim
     x = 0
@@ -52,6 +56,7 @@ def path(window, maze, prev):
         numMoves += 1
     return returnMaze, numMoves
 
+<<<<<<< HEAD
 def draw(window, maze):
     window.fill((255,255,255))
     grid(window, maze)
@@ -82,20 +87,43 @@ def movementTwo(window, maze, agentLocation):
 
 def render():
     maze = buildMaze(10, 0.15, 0.1)
+=======
+def redraw(window, maze):
+    window.fill((255,255,255))
+    prev = DFS(maze)
+    solvedMaze, numMoves = path(window, maze, prev)
+
+    grid(window, solvedMaze, numMoves)
+
+    pygame.display.update()
+
+def render():
+    maze = buildMaze(10, 0.25, 0.1)
+>>>>>>> 38828214d9223c9c8e11fc8ae4eddd29ae327dd3
     agentLocation = (0,0)
     maze[0][0] = -1
 
     rows = len(maze)
 
     window = pygame.display.set_mode((size,size))
+<<<<<<< HEAD
     show = True
     draw(window, maze)
+=======
+
+    show = True
+>>>>>>> 38828214d9223c9c8e11fc8ae4eddd29ae327dd3
 
     while show:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
+<<<<<<< HEAD
                 show = False
         agentLocation = movementTwo(window, maze, agentLocation)
+=======
+                exit()
+        redraw(window, maze)
+>>>>>>> 38828214d9223c9c8e11fc8ae4eddd29ae327dd3
 
 if __name__ == '__main__':
     render()

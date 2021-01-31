@@ -162,6 +162,64 @@ def BFS(maze, start=(0,0)):
         visited.append((currentRow, currentCol))
     return None
 ##
+<<<<<<< HEAD
+=======
+#   Performs an A* search algorithm to find the goal using the euclidean distance from node to the goal.
+#
+#   @param maze The populated matrix representing the maze
+#   @param start The start position of the search, default is (0,0)
+##
+def aStar(maze, start=(0,0)):
+    fringeNodes = [start]
+    distances = [0]
+    visited = []
+    prev = {start : None}
+    start_time = time.time()
+    while fringeNodes:
+        #Find the node which has the lowest distance to the goal
+        lowestDistance = 0
+        index = 0
+        for i in range(len(distances)):
+            if distances[i] <= lowestDistance:
+                index = i
+                lowestDistance = distances[i]
+        (currentRow, currentCol) = fringeNodes.pop(index)
+        distances.pop(index)
+        #################################################################################################
+        # Check the current condition of the child. If it's the goal, done. If not, find more children. #
+        #################################################################################################
+        if (currentRow, currentCol) == (len(maze) - 1, len(maze) - 1):
+            end_time = time.time()
+            elapsed_time = end_time - start_time
+            return prev
+        #rightChild
+        if isValid(maze, (currentRow, currentCol + 1)) and ((currentRow, currentCol + 1) not in visited and (currentRow, currentCol + 1) not in fringeNodes):
+            nodeDistance = math.sqrt(pow(((len(maze) - 1) - currentRow), 2) + pow(((len(maze) - 1) - (currentCol + 1)), 2))
+            fringeNodes.append((currentRow, currentCol + 1))
+            distances.append(nodeDistance)
+            prev.update({(currentRow, currentCol + 1) : (currentRow, currentCol)})
+        #downChild
+        if isValid(maze, (currentRow + 1, currentCol)) and ((currentRow + 1, currentCol) not in visited and (currentRow + 1, currentCol) not in fringeNodes):
+            nodeDistance = math.sqrt(pow(((len(maze) - 1) - (currentRow + 1)), 2) + pow(((len(maze) - 1) - currentCol), 2))
+            fringeNodes.append((currentRow + 1, currentCol))
+            distances.append(nodeDistance)
+            prev.update({(currentRow + 1, currentCol) : (currentRow, currentCol)})
+        #leftChild
+        if isValid(maze, (currentRow, currentCol - 1)) and ((currentRow, currentCol - 1) not in visited and (currentRow, currentCol - 1) not in fringeNodes):
+            nodeDistance = math.sqrt(pow(((len(maze) - 1) - currentRow), 2) + pow(((len(maze) - 1) - (currentCol - 1)), 2))
+            fringeNodes.append((currentRow, currentCol - 1))
+            distances.append(nodeDistance)
+            prev.update({(currentRow, currentCol - 1) : (currentRow, currentCol)})
+        #upChild
+        if isValid(maze, (currentRow - 1, currentCol)) and ((currentRow - 1, currentCol) not in visited and (currentRow - 1, currentCol) not in fringeNodes):
+            nodeDistance = math.sqrt(pow(((len(maze) - 1) - (currentRow - 1)), 2) + pow(((len(maze) - 1) - currentCol), 2))
+            fringeNodes.append((currentRow - 1, currentCol))
+            distances.append(nodeDistance)
+            prev.update({(currentRow - 1, currentCol) : (currentRow, currentCol)})
+        visited.append((currentRow, currentCol))
+    return None
+##
+>>>>>>> 38828214d9223c9c8e11fc8ae4eddd29ae327dd3
 #   Performs a probability check, seeing if a free tile will turn into fire depending on the number of fire neighbors
 #   nearby.
 ##
@@ -204,6 +262,15 @@ def performBFS(maze):
     prev = BFS(maze)
     steps = tracePath(maze,prev)
     ##print(str(steps) + " steps taken to reach the end.")
+<<<<<<< HEAD
+=======
+##
+#
+##
+def performAStar(maze):
+    prev = aStar(maze)
+    steps = tracePath(maze,prev)
+>>>>>>> 38828214d9223c9c8e11fc8ae4eddd29ae327dd3
 
 if __name__ == '__main__':
     print("To perform maze simulation, run 'simulate.py'.\nExiting...")
