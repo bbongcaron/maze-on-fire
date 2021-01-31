@@ -174,19 +174,17 @@ def aStar(maze, start=(0,0), spacesTraveled=[]):
     visited = []
     for alreadyVisited in spacesTraveled:
         visited.append(alreadyVisited)
-    prev = {start : None}
+    prev = {start: None}
     nodesExplored = 0
     start_time = time.time()
     while fringeNodes:
-        #Find the node which has the lowest distance to the goal
-        lowestDistance = 0
-        index = 0
-        for i in range(len(distances)):
-            if distances[i] <= lowestDistance:
-                index = i
-                lowestDistance = distances[i]
+        # Find the node which has the lowest distance to the goal
+        lowestDistance = min(distances)
+        index = distances.index(lowestDistance)
         (currentRow, currentCol) = fringeNodes.pop(index)
+        ####################### Visualize node just popped from fringe
         distances.pop(index)
+        #######################
         nodesExplored += 1
         #################################################################################################
         # Check the current condition of the child. If it's the goal, done. If not, find more children. #
@@ -195,30 +193,38 @@ def aStar(maze, start=(0,0), spacesTraveled=[]):
             end_time = time.time()
             elapsed_time = end_time - start_time
             return prev, nodesExplored
-        #rightChild
+        # rightChild
         if isValid(maze, (currentRow, currentCol + 1)) and ((currentRow, currentCol + 1) not in visited and (currentRow, currentCol + 1) not in fringeNodes):
-            nodeDistance = math.sqrt(pow(((len(maze) - 1) - currentRow), 2) + pow(((len(maze) - 1) - (currentCol + 1)), 2))
+            x_squared = pow((len(maze) - 1) - (currentCol + 1), 2)
+            y_squared = pow((len(maze) - 1) - (currentRow), 2)
+            nodeDistance = math.sqrt(x_squared + y_squared)
             fringeNodes.append((currentRow, currentCol + 1))
             distances.append(nodeDistance)
-            prev.update({(currentRow, currentCol + 1) : (currentRow, currentCol)})
-        #downChild
+            prev.update({(currentRow, currentCol + 1): (currentRow, currentCol)})
+        # downChild
         if isValid(maze, (currentRow + 1, currentCol)) and ((currentRow + 1, currentCol) not in visited and (currentRow + 1, currentCol) not in fringeNodes):
-            nodeDistance = math.sqrt(pow(((len(maze) - 1) - (currentRow + 1)), 2) + pow(((len(maze) - 1) - currentCol), 2))
+            x_squared = pow((len(maze) - 1) - (currentCol), 2)
+            y_squared = pow((len(maze) - 1) - (currentRow + 1), 2)
+            nodeDistance = math.sqrt(x_squared + y_squared)
             fringeNodes.append((currentRow + 1, currentCol))
             distances.append(nodeDistance)
-            prev.update({(currentRow + 1, currentCol) : (currentRow, currentCol)})
-        #leftChild
+            prev.update({(currentRow + 1, currentCol): (currentRow, currentCol)})
+        # leftChild
         if isValid(maze, (currentRow, currentCol - 1)) and ((currentRow, currentCol - 1) not in visited and (currentRow, currentCol - 1) not in fringeNodes):
-            nodeDistance = math.sqrt(pow(((len(maze) - 1) - currentRow), 2) + pow(((len(maze) - 1) - (currentCol - 1)), 2))
+            x_squared = pow((len(maze) - 1) - (currentCol - 1), 2)
+            y_squared = pow((len(maze) - 1) - (currentRow), 2)
+            nodeDistance = math.sqrt(x_squared + y_squared)
             fringeNodes.append((currentRow, currentCol - 1))
             distances.append(nodeDistance)
-            prev.update({(currentRow, currentCol - 1) : (currentRow, currentCol)})
-        #upChild
+            prev.update({(currentRow, currentCol - 1): (currentRow, currentCol)})
+        # upChild
         if isValid(maze, (currentRow - 1, currentCol)) and ((currentRow - 1, currentCol) not in visited and (currentRow - 1, currentCol) not in fringeNodes):
-            nodeDistance = math.sqrt(pow(((len(maze) - 1) - (currentRow - 1)), 2) + pow(((len(maze) - 1) - currentCol), 2))
+            x_squared = pow((len(maze) - 1) - (currentCol), 2)
+            y_squared = pow((len(maze) - 1) - (currentRow - 1), 2)
+            nodeDistance = math.sqrt(x_squared + y_squared)
             fringeNodes.append((currentRow - 1, currentCol))
             distances.append(nodeDistance)
-            prev.update({(currentRow - 1, currentCol) : (currentRow, currentCol)})
+            prev.update({(currentRow - 1, currentCol): (currentRow, currentCol)})
         visited.append((currentRow, currentCol))
     return None, nodesExplored
 
