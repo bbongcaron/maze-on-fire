@@ -1,71 +1,7 @@
 from maze import *
 import pygame, numpy
-size = 600
-def visualAstar(window, maze, start=(0,0), spacesTraveled=[]):
-    spaceDim = size // len(maze)
-    fringeNodes = [start]
-    distances = [0]
-    visited = []
-    for alreadyVisited in spacesTraveled:
-        visited.append(alreadyVisited)
-    prev = {start : None}
-    nodesExplored = 0
-    start_time = time.time()
-    while fringeNodes:
-        #Find the node which has the lowest distance to the goal
-        lowestDistance = min(distances)
-        index = distances.index(lowestDistance)
-        (currentRow, currentCol) = fringeNodes.pop(index)
-        ####################### Visualize node just popped from fringe
-        expandedNode = pygame.Rect(currentCol*spaceDim, currentRow*spaceDim, spaceDim, spaceDim)
-        distances.pop(index)
-        pygame.draw.rect(window, (150,150,150), expandedNode, width=0)
-        pygame.draw.rect(window, (0,0,0), expandedNode, width=1)
-        pygame.display.update()
-        time.sleep(0.1)
-        #######################
-        nodesExplored += 1
-        #################################################################################################
-        # Check the current condition of the child. If it's the goal, done. If not, find more children. #
-        #################################################################################################
-        if (currentRow, currentCol) == (len(maze) - 1, len(maze) - 1):
-            end_time = time.time()
-            elapsed_time = end_time - start_time
-            return prev, nodesExplored
-        #rightChild
-        if isValid(maze, (currentRow, currentCol + 1)) and ((currentRow, currentCol + 1) not in visited and (currentRow, currentCol + 1) not in fringeNodes):
-            x_squared = pow((len(maze) - 1) - (currentCol + 1), 2)
-            y_squared = pow((len(maze) - 1) - (currentRow), 2)
-            nodeDistance = math.sqrt(x_squared + y_squared)
-            fringeNodes.append((currentRow, currentCol + 1))
-            distances.append(nodeDistance)
-            prev.update({(currentRow, currentCol + 1) : (currentRow, currentCol)})
-        #downChild
-        if isValid(maze, (currentRow + 1, currentCol)) and ((currentRow + 1, currentCol) not in visited and (currentRow + 1, currentCol) not in fringeNodes):
-            x_squared = pow((len(maze) - 1) - (currentCol), 2)
-            y_squared = pow((len(maze) - 1) - (currentRow + 1), 2)
-            nodeDistance = math.sqrt(x_squared + y_squared)
-            fringeNodes.append((currentRow + 1, currentCol))
-            distances.append(nodeDistance)
-            prev.update({(currentRow + 1, currentCol) : (currentRow, currentCol)})
-        #leftChild
-        if isValid(maze, (currentRow, currentCol - 1)) and ((currentRow, currentCol - 1) not in visited and (currentRow, currentCol - 1) not in fringeNodes):
-            x_squared = pow((len(maze) - 1) - (currentCol - 1), 2)
-            y_squared = pow((len(maze) - 1) - (currentRow), 2)
-            nodeDistance = math.sqrt(x_squared + y_squared)
-            fringeNodes.append((currentRow, currentCol - 1))
-            distances.append(nodeDistance)
-            prev.update({(currentRow, currentCol - 1) : (currentRow, currentCol)})
-        #upChild
-        if isValid(maze, (currentRow - 1, currentCol)) and ((currentRow - 1, currentCol) not in visited and (currentRow - 1, currentCol) not in fringeNodes):
-            x_squared = pow((len(maze) - 1) - (currentCol), 2)
-            y_squared = pow((len(maze) - 1) - (currentRow - 1), 2)
-            nodeDistance = math.sqrt(x_squared + y_squared)
-            fringeNodes.append((currentRow - 1, currentCol))
-            distances.append(nodeDistance)
-            prev.update({(currentRow - 1, currentCol) : (currentRow, currentCol)})
-        visited.append((currentRow, currentCol))
-    return None, nodesExplored
+size = 1000
+
 ##
 #   Draws the unsolved maze.
 #
@@ -106,7 +42,7 @@ def grid(window, maze):
 #   @param window The pygame window which will be drawn on
 #   @param maze The populated matrix representing the maze
 ##
-def movementTwo(window, maze, firep):
+def movementTwo(window, maze, firep, algorithm):
     dim = len(maze)
     spaceDim = size // dim
     # Starting agent location
@@ -115,7 +51,15 @@ def movementTwo(window, maze, firep):
     spacesTraveled = [agentLocation]
     # The "Game loop"
     while True:
-        prev = DFS(maze, agentLocation, spacesTraveled)
+        prev = None
+        if algorithm == "dfs":
+            prev = DFS(maze, agentLocation, spacesTraveled)
+        elif algorithm == "bfs":
+            prev = BFS(maze, agentLocation, spacesTraveled)[0]
+        elif algorithm == "a*":
+            prev = aStar(maze, agentLocation, spacesTraveled)[0]
+        else:
+            return
         currentSpace = (dim - 1, dim - 1)
         # If no more paths to goal are present, stop
         if prev is None:
@@ -169,13 +113,13 @@ def main():
     elif float(argv[3]) < 0 or float(argv[3]) > 1:
         print("Invalid flammability rate.\nExiting...")
         return
-    #elif argv[4].lower() not in ['dfs', 'bfs', 'a*']:
-     #   print("Invalid search algorithm. Must be DFS, BFS, or A* (case-insensitive).\nExiting...")
-     #   return
+    elif argv[4].lower() not in ['dfs', 'bfs', 'a*']:
+        print("Invalid search algorithm. Must be DFS, BFS, or A* (case-insensitive).\nExiting...")
+        return
     dim = int(argv[1])
     occProbability = float(argv[2])
     firep = float(argv[3])
-    #algorithm = argv[4]
+    algorithm = argv[4]
     # Generate a random maze
     maze = buildMaze(dim, occProbability, firep)
     window = pygame.display.set_mode((size,size))
@@ -196,8 +140,6 @@ def main():
             if event.type == pygame.QUIT:
                 show = False
             if not attemptedPath:
-                #attemptedPath = movementTwo(window, maze, firep)
-                visualAstar(window, maze)
-                attemptedPath = True
+                attemptedPath = movementTwo(window, maze, firep, algorithm.lower())
 if __name__ == '__main__':
     main()
