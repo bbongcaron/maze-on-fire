@@ -162,8 +162,6 @@ def BFS(maze, start=(0,0)):
         visited.append((currentRow, currentCol))
     return None
 ##
-<<<<<<< HEAD
-=======
 #   Performs an A* search algorithm to find the goal using the euclidean distance from node to the goal.
 #
 #   @param maze The populated matrix representing the maze
@@ -219,7 +217,6 @@ def aStar(maze, start=(0,0)):
         visited.append((currentRow, currentCol))
     return None
 ##
->>>>>>> 38828214d9223c9c8e11fc8ae4eddd29ae327dd3
 #   Performs a probability check, seeing if a free tile will turn into fire depending on the number of fire neighbors
 #   nearby.
 ##
@@ -262,15 +259,12 @@ def performBFS(maze):
     prev = BFS(maze)
     steps = tracePath(maze,prev)
     ##print(str(steps) + " steps taken to reach the end.")
-<<<<<<< HEAD
-=======
 ##
 #
 ##
 def performAStar(maze):
     prev = aStar(maze)
     steps = tracePath(maze,prev)
->>>>>>> 38828214d9223c9c8e11fc8ae4eddd29ae327dd3
 
 if __name__ == '__main__':
     print("To perform maze simulation, run 'simulate.py'.\nExiting...")
