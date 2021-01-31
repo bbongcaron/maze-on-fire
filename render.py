@@ -34,23 +34,6 @@ def grid(window, maze):
     pygame.draw.rect(window, (255,255,0), newSpace, width=0)
     pygame.draw.rect(window, (0,0,0), newSpace, width=1)
 
-def path(maze, prev):
-    returnMaze = copy.deepcopy(maze)
-    dim = len(maze)
-    spaceDim = size // dim
-    # prev is None when a search algorithm has failed to find a path
-    if prev is None:
-        #print("No solution")
-        return maze
-    # Loop and count the number of moves in the path found by the search algorithm
-    numMoves = 0
-    currentSpace = (dim - 1, dim - 1)
-    while currentSpace != (0,0):
-        currentSpace = prev[currentSpace]
-        returnMaze[currentSpace[0]][currentSpace[1]] = 3
-        numMoves += 1
-    return returnMaze
-
 def draw(window, maze):
     window.fill((255,255,255))
     grid(window, maze)
