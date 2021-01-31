@@ -20,12 +20,14 @@ def visualAstar(window, maze, start=(0,0), spacesTraveled=[]):
                 index = i
                 lowestDistance = distances[i]
         (currentRow, currentCol) = fringeNodes.pop(index)
+        ####################### Visualize node just popped from fringe
         expandedNode = pygame.Rect(currentRow*spaceDim, currentCol*spaceDim, spaceDim, spaceDim)
         distances.pop(index)
         pygame.draw.rect(window, (150,150,150), expandedNode, width=0)
         pygame.draw.rect(window, (0,0,0), expandedNode, width=1)
         pygame.display.update()
         time.sleep(0.1)
+        #######################
         nodesExplored += 1
         #################################################################################################
         # Check the current condition of the child. If it's the goal, done. If not, find more children. #
