@@ -19,8 +19,6 @@ def visualAstar(window, maze, start=(0,0), spacesTraveled=[]):
         ####################### Visualize node just popped from fringe
         expandedNode = pygame.Rect(currentCol*spaceDim, currentRow*spaceDim, spaceDim, spaceDim)
         distances.pop(index)
-        distances.clear()
-        fringeNodes.clear()
         pygame.draw.rect(window, (150,150,150), expandedNode, width=0)
         pygame.draw.rect(window, (0,0,0), expandedNode, width=1)
         pygame.display.update()
@@ -38,7 +36,7 @@ def visualAstar(window, maze, start=(0,0), spacesTraveled=[]):
         if isValid(maze, (currentRow, currentCol + 1)) and ((currentRow, currentCol + 1) not in visited and (currentRow, currentCol + 1) not in fringeNodes):
             x_squared = pow((len(maze) - 1) - (currentCol + 1), 2)
             y_squared = pow((len(maze) - 1) - (currentRow), 2)
-            nodeDistance = x_squared + y_squared
+            nodeDistance = math.sqrt(x_squared + y_squared)
             fringeNodes.append((currentRow, currentCol + 1))
             distances.append(nodeDistance)
             prev.update({(currentRow, currentCol + 1) : (currentRow, currentCol)})
@@ -46,7 +44,7 @@ def visualAstar(window, maze, start=(0,0), spacesTraveled=[]):
         if isValid(maze, (currentRow + 1, currentCol)) and ((currentRow + 1, currentCol) not in visited and (currentRow + 1, currentCol) not in fringeNodes):
             x_squared = pow((len(maze) - 1) - (currentCol), 2)
             y_squared = pow((len(maze) - 1) - (currentRow + 1), 2)
-            nodeDistance = x_squared + y_squared
+            nodeDistance = math.sqrt(x_squared + y_squared)
             fringeNodes.append((currentRow + 1, currentCol))
             distances.append(nodeDistance)
             prev.update({(currentRow + 1, currentCol) : (currentRow, currentCol)})
@@ -54,7 +52,7 @@ def visualAstar(window, maze, start=(0,0), spacesTraveled=[]):
         if isValid(maze, (currentRow, currentCol - 1)) and ((currentRow, currentCol - 1) not in visited and (currentRow, currentCol - 1) not in fringeNodes):
             x_squared = pow((len(maze) - 1) - (currentCol - 1), 2)
             y_squared = pow((len(maze) - 1) - (currentRow), 2)
-            nodeDistance = x_squared + y_squared
+            nodeDistance = math.sqrt(x_squared + y_squared)
             fringeNodes.append((currentRow, currentCol - 1))
             distances.append(nodeDistance)
             prev.update({(currentRow, currentCol - 1) : (currentRow, currentCol)})
@@ -62,7 +60,7 @@ def visualAstar(window, maze, start=(0,0), spacesTraveled=[]):
         if isValid(maze, (currentRow - 1, currentCol)) and ((currentRow - 1, currentCol) not in visited and (currentRow - 1, currentCol) not in fringeNodes):
             x_squared = pow((len(maze) - 1) - (currentCol), 2)
             y_squared = pow((len(maze) - 1) - (currentRow - 1), 2)
-            nodeDistance = x_squared + y_squared
+            nodeDistance = math.sqrt(x_squared + y_squared)
             fringeNodes.append((currentRow - 1, currentCol))
             distances.append(nodeDistance)
             prev.update({(currentRow - 1, currentCol) : (currentRow, currentCol)})
