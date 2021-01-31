@@ -259,5 +259,9 @@ def performBFS(maze):
     steps = tracePath(maze,prev)
     ##print(str(steps) + " steps taken to reach the end.")
 
+def performAStar(maze):
+    prev = aStar(maze)
+    steps = tracePath(maze,prev)
+
 if __name__ == '__main__':
     print("To perform maze simulation, run 'simulate.py'.\nExiting...")
