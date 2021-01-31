@@ -21,7 +21,7 @@ def visualAstar(window, maze, start=(0,0), spacesTraveled=[]):
                 lowestDistance = distances[i]
         (currentRow, currentCol) = fringeNodes.pop(index)
         ####################### Visualize node just popped from fringe
-        expandedNode = pygame.Rect(currentRow*spaceDim, currentCol*spaceDim, spaceDim, spaceDim)
+        expandedNode = pygame.Rect(currentCol*spaceDim, currentRow*spaceDim, spaceDim, spaceDim)
         distances.pop(index)
         pygame.draw.rect(window, (150,150,150), expandedNode, width=0)
         pygame.draw.rect(window, (0,0,0), expandedNode, width=1)
@@ -38,25 +38,33 @@ def visualAstar(window, maze, start=(0,0), spacesTraveled=[]):
             return prev, nodesExplored
         #rightChild
         if isValid(maze, (currentRow, currentCol + 1)) and ((currentRow, currentCol + 1) not in visited and (currentRow, currentCol + 1) not in fringeNodes):
-            nodeDistance = math.sqrt(pow(((len(maze) - 1) - currentRow), 2) + pow(((len(maze) - 1) - (currentCol + 1)), 2))
+            x_squared = pow((len(maze) - 1) - (currentCol + 1), 2)
+            y_squared = pow((len(maze) - 1) - (currentRow), 2)
+            nodeDistance = x_squared + y_squared
             fringeNodes.append((currentRow, currentCol + 1))
             distances.append(nodeDistance)
             prev.update({(currentRow, currentCol + 1) : (currentRow, currentCol)})
         #downChild
         if isValid(maze, (currentRow + 1, currentCol)) and ((currentRow + 1, currentCol) not in visited and (currentRow + 1, currentCol) not in fringeNodes):
-            nodeDistance = math.sqrt(pow(((len(maze) - 1) - (currentRow + 1)), 2) + pow(((len(maze) - 1) - currentCol), 2))
+            x_squared = pow((len(maze) - 1) - (currentCol), 2)
+            y_squared = pow((len(maze) - 1) - (currentRow + 1), 2)
+            nodeDistance = x_squared + y_squared
             fringeNodes.append((currentRow + 1, currentCol))
             distances.append(nodeDistance)
             prev.update({(currentRow + 1, currentCol) : (currentRow, currentCol)})
         #leftChild
         if isValid(maze, (currentRow, currentCol - 1)) and ((currentRow, currentCol - 1) not in visited and (currentRow, currentCol - 1) not in fringeNodes):
-            nodeDistance = math.sqrt(pow(((len(maze) - 1) - currentRow), 2) + pow(((len(maze) - 1) - (currentCol - 1)), 2))
+            x_squared = pow((len(maze) - 1) - (currentCol - 1), 2)
+            y_squared = pow((len(maze) - 1) - (currentRow), 2)
+            nodeDistance = x_squared + y_squared
             fringeNodes.append((currentRow, currentCol - 1))
             distances.append(nodeDistance)
             prev.update({(currentRow, currentCol - 1) : (currentRow, currentCol)})
         #upChild
         if isValid(maze, (currentRow - 1, currentCol)) and ((currentRow - 1, currentCol) not in visited and (currentRow - 1, currentCol) not in fringeNodes):
-            nodeDistance = math.sqrt(pow(((len(maze) - 1) - (currentRow - 1)), 2) + pow(((len(maze) - 1) - currentCol), 2))
+            x_squared = pow((len(maze) - 1) - (currentCol), 2)
+            y_squared = pow((len(maze) - 1) - (currentRow - 1), 2)
+            nodeDistance = x_squared + y_squared
             fringeNodes.append((currentRow - 1, currentCol))
             distances.append(nodeDistance)
             prev.update({(currentRow - 1, currentCol) : (currentRow, currentCol)})
@@ -165,13 +173,13 @@ def main():
     elif float(argv[3]) < 0 or float(argv[3]) > 1:
         print("Invalid flammability rate.\nExiting...")
         return
-    elif argv[4].lower() not in ['dfs', 'bfs', 'a*']:
-        print("Invalid search algorithm. Must be DFS, BFS, or A* (case-insensitive).\nExiting...")
-        return
+    #elif argv[4].lower() not in ['dfs', 'bfs', 'a*']:
+     #   print("Invalid search algorithm. Must be DFS, BFS, or A* (case-insensitive).\nExiting...")
+     #   return
     dim = int(argv[1])
     occProbability = float(argv[2])
     firep = float(argv[3])
-    algorithm = argv[4]
+    #algorithm = argv[4]
     # Generate a random maze
     maze = buildMaze(dim, occProbability, firep)
     window = pygame.display.set_mode((size,size))
