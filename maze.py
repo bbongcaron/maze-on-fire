@@ -175,10 +175,11 @@ def aStar(maze, start=(0,0)):
     start_time = time.time()
     while fringeNodes:
         #Find the node which has the lowest distance to the goal
-        lowestDistance = -1
-        for i in distances:
+        lowestDistance = 0
+        index = 0
+        for i in range(len(distances)):
             if distances[i] <= lowestDistance:
-                index = distances.index(i)
+                index = i
                 lowestDistance = distances[i]
         (currentRow, currentCol) = fringeNodes.pop(index)
         distances.pop(index)
@@ -258,7 +259,9 @@ def performBFS(maze):
     prev = BFS(maze)
     steps = tracePath(maze,prev)
     ##print(str(steps) + " steps taken to reach the end.")
-
+##
+#
+##
 def performAStar(maze):
     prev = aStar(maze)
     steps = tracePath(maze,prev)
