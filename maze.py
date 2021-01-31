@@ -1,7 +1,6 @@
 from sys import *
-import math
-import time
-from random import random
+import math, time, copy
+from random import random, randrange
 ##
 #   Builds an n by n matrix of 0's and 1's representing a maze.
 #   0 : Space is invalid to move onto -> occupied
@@ -23,16 +22,12 @@ def buildMaze(dim, p, firep=0):
             if rand <= p:
                 maze[i][j] = 0
     # Randomly selects a fire tile
-    while not fireTile and firep != 0:
-        for i in range(dim):
-            for j in range(dim):
-                fireProb = random()
-                if fireProb <= firep and maze[i][j] == 1:
-                    maze[i][j] = 2
-                    fireTile = True
-                    break
-            if fireTile:
-                break
+    while True:
+        randx = randrange(dim)
+        randy = randrange(dim)
+        if maze[randx][randy] == 1:
+            maze[randx][randy] = 2
+            break
     # Ensure Start and Goal spaces are empty
     maze[0][0] = 1
     maze[dim - 1][dim - 1] = 1
@@ -69,9 +64,9 @@ def tracePath(maze, prev):
 def isValid(maze, coordinate):
     if coordinate[0] < 0 or coordinate[0] >= len(maze) or coordinate[1] < 0 or coordinate[1] >= len(maze):
         return False
-    if maze[coordinate[0]][coordinate[1]] == 0 or maze[coordinate[0]][coordinate[1]] == 2:
-        return False
-    return True
+    if maze[coordinate[0]][coordinate[1]] == 1:
+        return True
+    return False
 ##
 #   Performs a Depth-First Search on the maze starting at (0,0) to seek the Goal space.
 #
@@ -218,29 +213,37 @@ def aStar(maze, start=(0,0)):
             prev.update({(currentRow - 1, currentCol) : (currentRow, currentCol)})
         visited.append((currentRow, currentCol))
     return None
+
+def isBurning(maze, coordinate):
+        if coordinate[0] < 0 or coordinate[0] >= len(maze) or coordinate[1] < 0 or coordinate[1] >= len(maze):
+            return False
+        if maze[coordinate[0]][coordinate[1]] == 2:
+            return True
+        return False
 ##
 #   Performs a probability check, seeing if a free tile will turn into fire depending on the number of fire neighbors
 #   nearby.
 ##
 def fireSpread(maze, fireProbability):
-    counted = []
+    newMaze = copy.deepcopy(maze)
+    newFires = []
     for currentRow in range(len(maze)):
         for currentCol in range(len(maze)):
-            if (maze[currentRow][currentCol] == 1) and (currentRow, currentCol) not in counted:
-               k = 0
-               if (maze[currentRow - 1][currentCol] == 2) and isValid(maze, (currentRow - 1, currentCol)):
-                   k += 1
-               if (maze[currentRow][currentCol - 1] == 2) and isValid(maze, (currentRow, currentCol - 1)):
-                   k += 1
-               if (maze[currentRow + 1][currentCol] == 2) and isValid(maze, (currentRow + 1, currentCol)):
-                   k += 1
-               if (maze[currentRow][currentCol + 1] == 2) and isValid(maze, (currentRow, currentCol + 1)):
-                   k += 1
-               fireProb = 1 - pow((1 - fireProbability),k)
-               if random() <= fireProb:
-                   maze[currentRow][currentCol] = 2
-               counted.append((currentRow, currentCol))
-    return maze
+            if isValid(maze, (currentRow, currentCol)) and (currentRow, currentCol) not in newFires:
+                k = 0
+                if isBurning(maze, (currentRow - 1, currentCol)):
+                    k += 1
+                if isBurning(maze, (currentRow, currentCol - 1)):
+                    k += 1
+                if isBurning(maze, (currentRow + 1, currentCol)):
+                    k += 1
+                if isBurning(maze, (currentRow, currentCol + 1)):
+                    k += 1
+                fireProb = 1 - pow((1 - fireProbability),k)
+                if random() <= fireProb:
+                   newMaze[currentRow][currentCol] = 2
+                   newFires.append((currentRow, currentCol))
+    return newMaze, newFires
 ##
 #   Starts DFS
 #   @param maze The populated matrix representing the maze
