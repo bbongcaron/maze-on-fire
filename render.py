@@ -1,36 +1,93 @@
 from maze import *
-import pygame, numpy, copy
-size = 360
-
-<<<<<<< HEAD
-def grid(window, maze, numMoves=None):
-=======
-def grid(window, maze, numMoves=1):
->>>>>>> 38828214d9223c9c8e11fc8ae4eddd29ae327dd3
+import pygame, numpy
+size = 600
+def visualAstar(window, maze, start=(0,0), spacesTraveled=[]):
+    spaceDim = size // len(maze)
+    fringeNodes = [start]
+    distances = [0]
+    visited = []
+    for alreadyVisited in spacesTraveled:
+        visited.append(alreadyVisited)
+    prev = {start : None}
+    nodesExplored = 0
+    start_time = time.time()
+    while fringeNodes:
+        #Find the node which has the lowest distance to the goal
+        lowestDistance = 0
+        index = 0
+        for i in range(len(distances)):
+            if distances[i] <= lowestDistance:
+                index = i
+                lowestDistance = distances[i]
+        (currentRow, currentCol) = fringeNodes.pop(index)
+        ####################### Visualize node just popped from fringe
+        expandedNode = pygame.Rect(currentRow*spaceDim, currentCol*spaceDim, spaceDim, spaceDim)
+        distances.pop(index)
+        pygame.draw.rect(window, (150,150,150), expandedNode, width=0)
+        pygame.draw.rect(window, (0,0,0), expandedNode, width=1)
+        pygame.display.update()
+        time.sleep(0.1)
+        #######################
+        nodesExplored += 1
+        #################################################################################################
+        # Check the current condition of the child. If it's the goal, done. If not, find more children. #
+        #################################################################################################
+        if (currentRow, currentCol) == (len(maze) - 1, len(maze) - 1):
+            end_time = time.time()
+            elapsed_time = end_time - start_time
+            return prev, nodesExplored
+        #rightChild
+        if isValid(maze, (currentRow, currentCol + 1)) and ((currentRow, currentCol + 1) not in visited and (currentRow, currentCol + 1) not in fringeNodes):
+            nodeDistance = math.sqrt(pow(((len(maze) - 1) - currentRow), 2) + pow(((len(maze) - 1) - (currentCol + 1)), 2))
+            fringeNodes.append((currentRow, currentCol + 1))
+            distances.append(nodeDistance)
+            prev.update({(currentRow, currentCol + 1) : (currentRow, currentCol)})
+        #downChild
+        if isValid(maze, (currentRow + 1, currentCol)) and ((currentRow + 1, currentCol) not in visited and (currentRow + 1, currentCol) not in fringeNodes):
+            nodeDistance = math.sqrt(pow(((len(maze) - 1) - (currentRow + 1)), 2) + pow(((len(maze) - 1) - currentCol), 2))
+            fringeNodes.append((currentRow + 1, currentCol))
+            distances.append(nodeDistance)
+            prev.update({(currentRow + 1, currentCol) : (currentRow, currentCol)})
+        #leftChild
+        if isValid(maze, (currentRow, currentCol - 1)) and ((currentRow, currentCol - 1) not in visited and (currentRow, currentCol - 1) not in fringeNodes):
+            nodeDistance = math.sqrt(pow(((len(maze) - 1) - currentRow), 2) + pow(((len(maze) - 1) - (currentCol - 1)), 2))
+            fringeNodes.append((currentRow, currentCol - 1))
+            distances.append(nodeDistance)
+            prev.update({(currentRow, currentCol - 1) : (currentRow, currentCol)})
+        #upChild
+        if isValid(maze, (currentRow - 1, currentCol)) and ((currentRow - 1, currentCol) not in visited and (currentRow - 1, currentCol) not in fringeNodes):
+            nodeDistance = math.sqrt(pow(((len(maze) - 1) - (currentRow - 1)), 2) + pow(((len(maze) - 1) - currentCol), 2))
+            fringeNodes.append((currentRow - 1, currentCol))
+            distances.append(nodeDistance)
+            prev.update({(currentRow - 1, currentCol) : (currentRow, currentCol)})
+        visited.append((currentRow, currentCol))
+    return None, nodesExplored
+##
+#   Draws the unsolved maze.
+#
+#   @param window The pygame window which will be drawn on
+#   @param maze The populated matrix representing the maze
+##
+def grid(window, maze):
+    window.fill((255,255,255))
     dim = len(maze)
     spaceDim = size // dim
     x = 0
     y = 0
-    if numMoves is not None:
-        grayscale = numpy.linspace(20,240,numMoves,dtype='int')
     for row in maze:
         for space in row:
             newSpace = pygame.Rect(x, y, spaceDim, spaceDim)
+            # Color in obstacles
             if space == 0:
                 pygame.draw.rect(window, (0,0,0), newSpace, width=0)
                 pygame.draw.rect(window, (0,0,0), newSpace, width=1)
+            # Color in empty spaces
             elif space == 1:
                 pygame.draw.rect(window, (255,255,255), newSpace, width=0)
                 pygame.draw.rect(window, (0,0,0), newSpace, width=1)
+            # Color in the starting fire
             elif space == 2:
                 pygame.draw.rect(window, (255,0,0), newSpace, width=0)
-                pygame.draw.rect(window, (0,0,0), newSpace, width=1)
-            elif space == 3:
-                pygame.draw.rect(window, (grayscale[numMoves-1], grayscale[numMoves-1], grayscale[numMoves-1]), newSpace, width=0)
-                pygame.draw.rect(window, (0,0,0), newSpace, width=1)
-                numMoves -= 1
-            elif space == -1:
-                pygame.draw.rect(window, (0,255,255), newSpace, width=0)
                 pygame.draw.rect(window, (0,0,0), newSpace, width=1)
             x += spaceDim
         y += spaceDim
@@ -38,92 +95,105 @@ def grid(window, maze, numMoves=1):
     goalSpace = pygame.Rect(dim - 1 ,dim - 1, spaceDim, spaceDim)
     pygame.draw.rect(window, (255,255,0), newSpace, width=0)
     pygame.draw.rect(window, (0,0,0), newSpace, width=1)
-
-def path(window, maze, prev):
-    returnMaze = copy.deepcopy(maze)
+    pygame.display.update()
+##
+#   A game loop implementing Strategy 2 for solving the maze.
+#
+#   @param window The pygame window which will be drawn on
+#   @param maze The populated matrix representing the maze
+##
+def movementTwo(window, maze, firep):
     dim = len(maze)
     spaceDim = size // dim
-    # prev is None when a search algorithm has failed to find a path
-    if prev is None:
-        #print("No solution")
-        return maze, None
-    # Loop and count the number of moves in the path found by the search algorithm
-    numMoves = 0
-    currentSpace = (dim - 1, dim - 1)
-    while currentSpace != (0,0):
-        currentSpace = prev[currentSpace]
-        returnMaze[currentSpace[0]][currentSpace[1]] = 3
-        numMoves += 1
-    return returnMaze, numMoves
-
-<<<<<<< HEAD
-def draw(window, maze):
-    window.fill((255,255,255))
-    grid(window, maze)
-    pygame.display.update()
-
-def movementTwo(window, maze, agentLocation):
-    dim = len(maze)
-    spaceDim = size // dim
-    prev = DFS(maze, agentLocation)
-    if prev is None:
-        return agentLocation
-    currentSpace = (dim - 1, dim - 1)
-    while prev[currentSpace] != agentLocation:
-        currentSpace = prev[currentSpace]
-
-    newCurrent = pygame.Rect(currentSpace[1]*spaceDim, currentSpace[0]*spaceDim, spaceDim, spaceDim)
-    pygame.draw.rect(window, (0,255,255), newCurrent, width=0)
-    pygame.draw.rect(window, (0,0,0), newCurrent, width=1)
-    pygame.display.update()
-    time.sleep(0.2)
-
-    prevSpace = pygame.Rect(prev[currentSpace][1]*spaceDim, prev[currentSpace][0]*spaceDim, spaceDim, spaceDim)
-    pygame.draw.rect(window, (50, 50, 50), prevSpace, width=0)
-    pygame.draw.rect(window, (0,0,0), prevSpace, width=1)
-    pygame.display.update()
-    return currentSpace
-
-
-def render():
-    maze = buildMaze(10, 0.15, 0.1)
-=======
-def redraw(window, maze):
-    window.fill((255,255,255))
-    prev = DFS(maze)
-    solvedMaze, numMoves = path(window, maze, prev)
-
-    grid(window, solvedMaze, numMoves)
-
-    pygame.display.update()
-
-def render():
-    maze = buildMaze(10, 0.25, 0.1)
->>>>>>> 38828214d9223c9c8e11fc8ae4eddd29ae327dd3
+    # Starting agent location
     agentLocation = (0,0)
-    maze[0][0] = -1
-
-    rows = len(maze)
-
+    # spacesTraveled - A dynamic visited list to be passed to DFS
+    spacesTraveled = [agentLocation]
+    # The "Game loop"
+    while True:
+        prev = DFS(maze, agentLocation, spacesTraveled)
+        currentSpace = (dim - 1, dim - 1)
+        # If no more paths to goal are present, stop
+        if prev is None:
+            return True
+        # While loop to find the next move for the agent
+        while prev[currentSpace] != agentLocation:
+            currentSpace = prev[currentSpace]
+        # Color the previous space gray
+        prevSpace = pygame.Rect(prev[currentSpace][1]*spaceDim, prev[currentSpace][0]*spaceDim, spaceDim, spaceDim)
+        pygame.draw.rect(window, (150, 150, 150), prevSpace, width=0)
+        pygame.draw.rect(window, (0,0,0), prevSpace, width=1)
+        pygame.display.update()
+        # Color the agent's new location blue
+        newCurrent = pygame.Rect(currentSpace[1]*spaceDim, currentSpace[0]*spaceDim, spaceDim,  spaceDim)
+        pygame.draw.rect(window, (0,0,255), newCurrent, width=0)
+        pygame.draw.rect(window, (0,0,0), newCurrent, width=1)
+        pygame.display.update()
+        # Update spacesTraveled and the agent's new location
+        spacesTraveled.append(currentSpace)
+        agentLocation = currentSpace
+        ####################################################################
+        #   Fire spread
+        ####################################################################
+        maze, newFires = fireSpread(maze, firep)
+        # Color new fire spaces red
+        for space in newFires:
+            newFire = pygame.Rect(space[1]*spaceDim, space[0]*spaceDim, spaceDim, spaceDim)
+            pygame.draw.rect(window, (255,0,0), newFire, width=0)
+            pygame.draw.rect(window, (0,0,0), newFire, width=1)
+            pygame.display.update()
+        time.sleep(0.15)
+        # Agent dies if it catches on fire
+        if agentLocation in newFires:
+            return True
+        # Return if at the Goal
+        if agentLocation == (dim - 1, dim - 1):
+            return True
+##
+#   Driver function
+#
+#   @argv[1] The dimension of the dim by dim maze
+#   @argv[2] The probability that a matrix cell will be occupied (0 < p < 1)
+#   @argv[3] The flammability rate (0 <= q <= 1)
+#   @argv[4] The search algorithm to be performed (DFS, BFS, A*)
+##
+def main():
+    # Command line arguments check
+    if float(argv[2]) <= 0 or float(argv[2]) >= 1:
+        print("Invalid occupancy probability.\nExiting...")
+        return
+    elif float(argv[3]) < 0 or float(argv[3]) > 1:
+        print("Invalid flammability rate.\nExiting...")
+        return
+    elif argv[4].lower() not in ['dfs', 'bfs', 'a*']:
+        print("Invalid search algorithm. Must be DFS, BFS, or A* (case-insensitive).\nExiting...")
+        return
+    dim = int(argv[1])
+    occProbability = float(argv[2])
+    firep = float(argv[3])
+    algorithm = argv[4]
+    # Generate a random maze
+    maze = buildMaze(dim, occProbability, firep)
     window = pygame.display.set_mode((size,size))
-<<<<<<< HEAD
     show = True
-    draw(window, maze)
-=======
+    # Build the maze grid
+    grid(window, maze)
+    spaceDim = size // dim
+    # Color the agent's starting space blue
+    origin = pygame.Rect(0, 0, spaceDim, spaceDim)
+    pygame.draw.rect(window, (0,0,255), origin, width=0)
+    pygame.draw.rect(window, (0,0,0), origin, width=1)
+    pygame.display.update()
 
-    show = True
->>>>>>> 38828214d9223c9c8e11fc8ae4eddd29ae327dd3
-
+    attemptedPath = False
+    # Overall window loop
     while show:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-<<<<<<< HEAD
                 show = False
-        agentLocation = movementTwo(window, maze, agentLocation)
-=======
-                exit()
-        redraw(window, maze)
->>>>>>> 38828214d9223c9c8e11fc8ae4eddd29ae327dd3
-
+            if not attemptedPath:
+                #attemptedPath = movementTwo(window, maze, firep)
+                visualAstar(window, maze)
+                attemptedPath = True
 if __name__ == '__main__':
-    render()
+    main()
