@@ -69,7 +69,7 @@ def tracePath(maze, prev):
 def isValid(maze, coordinate):
     if coordinate[0] < 0 or coordinate[0] >= len(maze) or coordinate[1] < 0 or coordinate[1] >= len(maze):
         return False
-    if maze[coordinate[0]][coordinate[1]] == 0:
+    if maze[coordinate[0]][coordinate[1]] == 0 or maze[coordinate[0]][coordinate[1]] == 2:
         return False
     return True
 ##
@@ -78,9 +78,11 @@ def isValid(maze, coordinate):
 #   @param maze The populated matrix representing the maze
 #   @param start The start position of the search, default is (0,0)
 ##
-def DFS(maze,start=(0,0)):
+def DFS(maze,start=(0,0),spacesTraveled=[]):
     fringe = [start]
     visited = []
+    for alreadyVisited in spacesTraveled:
+        visited.append(alreadyVisited)
     prev = {start : None}
     start_time = time.time()
     while fringe:
