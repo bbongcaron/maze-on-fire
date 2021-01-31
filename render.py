@@ -5,6 +5,7 @@ def visualAstar(window, maze, start=(0,0), spacesTraveled=[]):
     spaceDim = size // len(maze)
     fringeNodes = [start]
     distances = [0]
+    distance = {}
     visited = []
     for alreadyVisited in spacesTraveled:
         visited.append(alreadyVisited)
@@ -12,17 +13,23 @@ def visualAstar(window, maze, start=(0,0), spacesTraveled=[]):
     nodesExplored = 0
     start_time = time.time()
     while fringeNodes:
-        #Find the node which has the lowest distance to the goal
-        lowestDistance = min(distances)
-        index = distances.index(lowestDistance)
-        (currentRow, currentCol) = fringeNodes.pop(index)
+        # Find the node which has the lowest distance to the goal
+        lowestDistance = 0
+        closestNode = (0,0)
+        for key in distance:
+            lowestDistance = min(distance[key], lowestDistance)
+            if lowestDistance == distance[key]:
+                closestNode = key
+        currentRow = closestNode[0]
+
+        (currentRow, currentCol) = fringeNodes.remove(closestNode)
         ####################### Visualize node just popped from fringe
         expandedNode = pygame.Rect(currentCol*spaceDim, currentRow*spaceDim, spaceDim, spaceDim)
         distances.pop(index)
         pygame.draw.rect(window, (150,150,150), expandedNode, width=0)
         pygame.draw.rect(window, (0,0,0), expandedNode, width=1)
         pygame.display.update()
-        time.sleep(0.1)
+
         #######################
         nodesExplored += 1
         #################################################################################################
@@ -153,6 +160,28 @@ def movementTwo(window, maze, firep):
         # Return if at the Goal
         if agentLocation == (dim - 1, dim - 1):
             return True
+
+def tracePath(window, maze, prev):
+    dim = len(maze)
+    spaceDim = size // dim
+    # prev is None when a search algorithm has failed to find a path
+    if prev is None:
+        #print("No solution")
+        return
+    # Loop and count the number of moves in the path found by the search algorithm
+    currentSpace = (len(maze) - 1, len(maze) - 1)
+    while currentSpace != (0,0):
+        currentSpace = prev[currentSpace]
+        pathSpace = pygame.Rect(currentSpace[1]*spaceDim, currentSpace[0]*spaceDim, spaceDim, spaceDim)
+        pygame.draw.rect(window, (0,255,0), pathSpace, width=0)
+        pygame.draw.rect(window, (0,0,0), pathSpace, width=1)
+        time.sleep(0.05)
+        pygame.display.update()
+    # Loop and label the moves taken in order
+    #print("Success")
+    return
+##
+
 ##
 #   Driver function
 #
@@ -197,7 +226,8 @@ def main():
                 show = False
             if not attemptedPath:
                 #attemptedPath = movementTwo(window, maze, firep)
-                visualAstar(window, maze)
+                prev = visualAstar(window, maze)[0]
+                #tracePath(window, maze, prev)
                 attemptedPath = True
 if __name__ == '__main__':
     main()
