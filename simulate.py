@@ -53,8 +53,6 @@ def pVSsuccessRateDFS(dim, numRunsPerP):
     plt.show()
     return
 
-def BFS_AvsP():
-
 ##
 #   Driver function
 #

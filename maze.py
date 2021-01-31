@@ -119,9 +119,11 @@ def DFS(maze,start=(0,0),spacesTraveled=[]):
 #   @param maze The populated matrix representing the maze
 #   @param start The start position of the search, default is (0,0)
 ##
-def BFS(maze, start=(0,0)):
+def BFS(maze, start=(0,0), spacesTraveled=[]):
     fringe = [start]
     visited = []
+    for alreadyVisited in spacesTraveled:
+        visited.append(alreadyVisited)
     prev = {start : None}
     start_time = time.time()
     while fringe:
@@ -164,10 +166,12 @@ def BFS(maze, start=(0,0)):
 #   @param maze The populated matrix representing the maze
 #   @param start The start position of the search, default is (0,0)
 ##
-def aStar(maze, start=(0,0)):
+def aStar(maze, start=(0,0), spacesTraveled=[]):
     fringeNodes = [start]
     distances = [0]
     visited = []
+    for alreadyVisited in spacesTraveled:
+        visited.append(alreadyVisited)
     prev = {start : None}
     start_time = time.time()
     while fringeNodes:
