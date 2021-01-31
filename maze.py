@@ -125,9 +125,11 @@ def BFS(maze, start=(0,0), spacesTraveled=[]):
     for alreadyVisited in spacesTraveled:
         visited.append(alreadyVisited)
     prev = {start : None}
+    nodesExplored = 0
     start_time = time.time()
     while fringe:
         (currentRow, currentCol) = fringe.pop(0)
+        nodesExplored += 1
         #takes off the first position coordinate off of fringe, acts as dequeue.
         #####################################
         # Checks the condition of the child #
@@ -136,7 +138,7 @@ def BFS(maze, start=(0,0), spacesTraveled=[]):
             end_time = time.time()
             elapsed_time = end_time - start_time
             #print(str(elapsed_time) + "s to find path with DFS")
-            return prev
+            return prev, nodesExplored
         #rightChild
         if isValid(maze, (currentRow, currentCol + 1)) and ((currentRow, currentCol + 1) not in visited and (currentRow, currentCol + 1) not in fringe):
             fringe.append((currentRow, currentCol + 1))
@@ -159,7 +161,7 @@ def BFS(maze, start=(0,0), spacesTraveled=[]):
         # left or up.
         ###################################################################################################
         visited.append((currentRow, currentCol))
-    return None
+    return None, nodesExplored
 ##
 #   Performs an A* search algorithm to find the goal using the euclidean distance from node to the goal.
 #
@@ -173,6 +175,7 @@ def aStar(maze, start=(0,0), spacesTraveled=[]):
     for alreadyVisited in spacesTraveled:
         visited.append(alreadyVisited)
     prev = {start : None}
+    nodesExplored = 0
     start_time = time.time()
     while fringeNodes:
         #Find the node which has the lowest distance to the goal
@@ -184,13 +187,14 @@ def aStar(maze, start=(0,0), spacesTraveled=[]):
                 lowestDistance = distances[i]
         (currentRow, currentCol) = fringeNodes.pop(index)
         distances.pop(index)
+        nodesExplored += 1
         #################################################################################################
         # Check the current condition of the child. If it's the goal, done. If not, find more children. #
         #################################################################################################
         if (currentRow, currentCol) == (len(maze) - 1, len(maze) - 1):
             end_time = time.time()
             elapsed_time = end_time - start_time
-            return prev
+            return prev, nodesExplored
         #rightChild
         if isValid(maze, (currentRow, currentCol + 1)) and ((currentRow, currentCol + 1) not in visited and (currentRow, currentCol + 1) not in fringeNodes):
             nodeDistance = math.sqrt(pow(((len(maze) - 1) - currentRow), 2) + pow(((len(maze) - 1) - (currentCol + 1)), 2))
@@ -216,7 +220,7 @@ def aStar(maze, start=(0,0), spacesTraveled=[]):
             distances.append(nodeDistance)
             prev.update({(currentRow - 1, currentCol) : (currentRow, currentCol)})
         visited.append((currentRow, currentCol))
-    return None
+    return None, nodesExplored
 
 def isBurning(maze, coordinate):
         if coordinate[0] < 0 or coordinate[0] >= len(maze) or coordinate[1] < 0 or coordinate[1] >= len(maze):
