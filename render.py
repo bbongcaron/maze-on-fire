@@ -26,6 +26,8 @@ def visualAstar(window, maze, start=(0,0), spacesTraveled=[]):
         ####################### Visualize node just popped from fringe
         expandedNode = pygame.Rect(currentCol*spaceDim, currentRow*spaceDim, spaceDim, spaceDim)
         distances.pop(index)
+        distances.clear()
+        fringeNodes.clear()
         pygame.draw.rect(window, (150,150,150), expandedNode, width=0)
         pygame.draw.rect(window, (0,0,0), expandedNode, width=1)
         pygame.display.update()
