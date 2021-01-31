@@ -253,7 +253,7 @@ def fireSpread(maze, fireProbability):
                    newFires.append((currentRow, currentCol))
     return newMaze, newFires
 ##
-#   Starts DFS
+#   Starts DFS and returns True if the run was successful
 #   @param maze The populated matrix representing the maze
 ##
 def performDFS(maze):
