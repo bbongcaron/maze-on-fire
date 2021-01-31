@@ -1,6 +1,65 @@
 from maze import *
 import pygame, numpy
 size = 600
+def visualAstar(window, maze, start=(0,0), spacesTraveled=[]):
+    spaceDim = size // len(maze)
+    fringeNodes = [start]
+    distances = [0]
+    visited = []
+    for alreadyVisited in spacesTraveled:
+        visited.append(alreadyVisited)
+    prev = {start : None}
+    nodesExplored = 0
+    start_time = time.time()
+    while fringeNodes:
+        #Find the node which has the lowest distance to the goal
+        lowestDistance = 0
+        index = 0
+        for i in range(len(distances)):
+            if distances[i] <= lowestDistance:
+                index = i
+                lowestDistance = distances[i]
+        (currentRow, currentCol) = fringeNodes.pop(index)
+        expandedNode = pygame.Rect(currentRow*spaceDim, currentCol*spaceDim, spaceDim, spaceDim)
+        distances.pop(index)
+        pygame.draw.rect(window, (150,150,150), expandedNode, width=0)
+        pygame.draw.rect(window, (0,0,0), expandedNode, width=1)
+        pygame.display.update()
+        time.sleep(0.1)
+        nodesExplored += 1
+        #################################################################################################
+        # Check the current condition of the child. If it's the goal, done. If not, find more children. #
+        #################################################################################################
+        if (currentRow, currentCol) == (len(maze) - 1, len(maze) - 1):
+            end_time = time.time()
+            elapsed_time = end_time - start_time
+            return prev, nodesExplored
+        #rightChild
+        if isValid(maze, (currentRow, currentCol + 1)) and ((currentRow, currentCol + 1) not in visited and (currentRow, currentCol + 1) not in fringeNodes):
+            nodeDistance = math.sqrt(pow(((len(maze) - 1) - currentRow), 2) + pow(((len(maze) - 1) - (currentCol + 1)), 2))
+            fringeNodes.append((currentRow, currentCol + 1))
+            distances.append(nodeDistance)
+            prev.update({(currentRow, currentCol + 1) : (currentRow, currentCol)})
+        #downChild
+        if isValid(maze, (currentRow + 1, currentCol)) and ((currentRow + 1, currentCol) not in visited and (currentRow + 1, currentCol) not in fringeNodes):
+            nodeDistance = math.sqrt(pow(((len(maze) - 1) - (currentRow + 1)), 2) + pow(((len(maze) - 1) - currentCol), 2))
+            fringeNodes.append((currentRow + 1, currentCol))
+            distances.append(nodeDistance)
+            prev.update({(currentRow + 1, currentCol) : (currentRow, currentCol)})
+        #leftChild
+        if isValid(maze, (currentRow, currentCol - 1)) and ((currentRow, currentCol - 1) not in visited and (currentRow, currentCol - 1) not in fringeNodes):
+            nodeDistance = math.sqrt(pow(((len(maze) - 1) - currentRow), 2) + pow(((len(maze) - 1) - (currentCol - 1)), 2))
+            fringeNodes.append((currentRow, currentCol - 1))
+            distances.append(nodeDistance)
+            prev.update({(currentRow, currentCol - 1) : (currentRow, currentCol)})
+        #upChild
+        if isValid(maze, (currentRow - 1, currentCol)) and ((currentRow - 1, currentCol) not in visited and (currentRow - 1, currentCol) not in fringeNodes):
+            nodeDistance = math.sqrt(pow(((len(maze) - 1) - (currentRow - 1)), 2) + pow(((len(maze) - 1) - currentCol), 2))
+            fringeNodes.append((currentRow - 1, currentCol))
+            distances.append(nodeDistance)
+            prev.update({(currentRow - 1, currentCol) : (currentRow, currentCol)})
+        visited.append((currentRow, currentCol))
+    return None, nodesExplored
 ##
 #   Draws the unsolved maze.
 #
@@ -131,7 +190,8 @@ def main():
             if event.type == pygame.QUIT:
                 show = False
             if not attemptedPath:
-                attemptedPath = movementTwo(window, maze, firep)
-
+                #attemptedPath = movementTwo(window, maze, firep)
+                visualAstar(window, maze)
+                attemptedPath = True
 if __name__ == '__main__':
     main()
