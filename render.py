@@ -1,6 +1,6 @@
 from maze import *
 import pygame, numpy
-size = 1000
+size = 600
 
 ##
 #   Draws the unsolved maze.

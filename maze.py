@@ -228,6 +228,131 @@ def aStar(maze, start=(0,0), spacesTraveled=[]):
         visited.append((currentRow, currentCol))
     return None, nodesExplored
 
+def aStarPlus(maze, start=(0,0), spacesTraveled=[]):
+    fringeNodes = [start]
+    distances = [0]
+    visited = []
+    for alreadyVisited in spacesTraveled:
+        visited.append(alreadyVisited)
+    prev = {start: None}
+    nodesExplored = 0
+    start_time = time.time()
+    def checkCost(maze, checkNode, direction):
+    # A helper function to help make any node being checked if it's dangerous or not by adding more cost based on
+    # if it has a fire nearby or wall nearby.
+        addedCost = 0
+        if direction == "right":
+            if isBurning(maze, (checkNode[0], checkNode[1] + 1)):
+                addedCost += 10
+            if not isValid(maze, (checkNode[0], checkNode[1] + 1)):
+                addedCost += 3
+            if isBurning(maze, (checkNode[0] + 1, checkNode[1])):
+                addedCost += 10
+            if not isValid(maze, (checkNode[0] + 1, checkNode[1])):
+                addedCost += 3
+            if isBurning(maze, (checkNode[0] - 1, checkNode[1])):
+                addedCost += 10
+            if not isValid(maze, (checkNode[0] - 1, checkNode[1])):
+                addedCost += 3
+            return addedCost
+        if direction == "down":
+            if isBurning(maze, (checkNode[0] + 1, checkNode[1])):
+                addedCost += 10
+            if not isValid(maze, (checkNode[0] + 1, checkNode[1])):
+                addedCost += 3
+            if isBurning(maze, (checkNode[0], checkNode[1] + 1)):
+                addedCost += 10
+            if not isValid(maze, (checkNode[0], checkNode[1] + 1)):
+                addedCost += 3
+            if isBurning(maze, (checkNode[0], checkNode[1] - 1)):
+                addedCost += 10
+            if not isValid(maze, (checkNode[0], checkNode[1] - 1)):
+                addedCost += 3
+            return addedCost
+        if direction == "left":
+            if isBurning(maze, (checkNode[0], checkNode[1] - 1)):
+                addedCost += 10
+            if not isValid(maze, (checkNode[0], checkNode[1] - 1)):
+                addedCost += 3
+            if isBurning(maze, (checkNode[0] + 1, checkNode[1])):
+                addedCost += 10
+            if not isValid(maze, (checkNode[0] + 1, checkNode[1])):
+                addedCost += 3
+            if isBurning(maze, (checkNode[0] - 1, checkNode[1])):
+                addedCost += 10
+            if not isValid(maze, (checkNode[0] - 1, checkNode[1])):
+                addedCost += 3
+            return addedCost
+        if direction == "up":
+            if isBurning(maze, (checkNode[0] - 1, checkNode[1])):
+                addedCost += 10
+            if not isValid(maze, (checkNode[0] - 1, checkNode[1])):
+                addedCost += 3
+            if isBurning(maze, (checkNode[0], checkNode[1] + 1)):
+                addedCost += 10
+            if not isValid(maze, (checkNode[0], checkNode[1] + 1)):
+                addedCost += 3
+            if isBurning(maze, (checkNode[0], checkNode[1] - 1)):
+                addedCost += 10
+            if not isValid(maze, (checkNode[0], checkNode[1] - 1)):
+                addedCost += 3
+            return addedCost
+        return None
+    while fringeNodes:
+        # Find the node which has the lowest distance to the goal
+        lowestDistance = min(distances)
+        index = distances.index(lowestDistance)
+        (currentRow, currentCol) = fringeNodes.pop(index)
+        ####################### Visualize node just popped from fringe
+        distances.pop(index)
+        #######################
+        nodesExplored += 1
+        #################################################################################################
+        # Check the current condition of the child. If it's the goal, done. If not, find more children. #
+        #################################################################################################
+        if (currentRow, currentCol) == (len(maze) - 1, len(maze) - 1):
+            end_time = time.time()
+            elapsed_time = end_time - start_time
+            return prev, nodesExplored
+        # rightChild
+        if isValid(maze, (currentRow, currentCol + 1)) and ((currentRow, currentCol + 1) not in visited and (currentRow, currentCol + 1) not in fringeNodes):
+            x_squared = pow((len(maze) - 1) - (currentCol + 1), 2)
+            y_squared = pow((len(maze) - 1) - (currentRow), 2)
+            addedCost = checkCost(maze, (currentRow, currentCol + 1), "right")
+            nodeCost = math.sqrt(x_squared + y_squared) + addedCost
+            fringeNodes.append((currentRow, currentCol + 1))
+            distances.append(nodeCost)
+            prev.update({(currentRow, currentCol + 1): (currentRow, currentCol)})
+        # downChild
+        if isValid(maze, (currentRow + 1, currentCol)) and ((currentRow + 1, currentCol) not in visited and (currentRow + 1, currentCol) not in fringeNodes):
+            x_squared = pow((len(maze) - 1) - (currentCol), 2)
+            y_squared = pow((len(maze) - 1) - (currentRow + 1), 2)
+            addedCost = checkCost(maze, (currentRow + 1, currentCol), "down")
+            nodeCost = math.sqrt(x_squared + y_squared) + addedCost
+            fringeNodes.append((currentRow + 1, currentCol))
+            distances.append(nodeCost)
+            prev.update({(currentRow + 1, currentCol): (currentRow, currentCol)})
+        # leftChild
+        if isValid(maze, (currentRow, currentCol - 1)) and ((currentRow, currentCol - 1) not in visited and (currentRow, currentCol - 1) not in fringeNodes):
+            x_squared = pow((len(maze) - 1) - (currentCol - 1), 2)
+            y_squared = pow((len(maze) - 1) - (currentRow), 2)
+            addedCost = checkCost(maze, (currentRow, currentCol - 1), "left")
+            nodeCost = math.sqrt(x_squared + y_squared) + addedCost
+            fringeNodes.append((currentRow, currentCol - 1))
+            distances.append(nodeCost)
+            prev.update({(currentRow, currentCol - 1): (currentRow, currentCol)})
+        # upChild
+        if isValid(maze, (currentRow - 1, currentCol)) and ((currentRow - 1, currentCol) not in visited and (currentRow - 1, currentCol) not in fringeNodes):
+            x_squared = pow((len(maze) - 1) - (currentCol), 2)
+            y_squared = pow((len(maze) - 1) - (currentRow - 1), 2)
+            addedCost = checkCost(maze, (currentRow - 1, currentCol), "down")
+            nodeCost = math.sqrt(x_squared + y_squared) + addedCost
+            fringeNodes.append((currentRow - 1, currentCol))
+            distances.append(nodeCost)
+            prev.update({(currentRow - 1, currentCol): (currentRow, currentCol)})
+        visited.append((currentRow, currentCol))
+    return None, nodesExplored
+
 def isBurning(maze, coordinate):
         if coordinate[0] < 0 or coordinate[0] >= len(maze) or coordinate[1] < 0 or coordinate[1] >= len(maze):
             return False
