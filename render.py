@@ -58,6 +58,8 @@ def movementTwo(window, maze, firep, algorithm):
             prev = BFS(maze, agentLocation, spacesTraveled)[0]
         elif algorithm == "a*":
             prev = aStar(maze, agentLocation, spacesTraveled)[0]
+        elif algorithm == "a*+":
+            prev = aStarPlus(maze, agentLocation, spacesTraveled)[0]
         else:
             return
         currentSpace = (dim - 1, dim - 1)
@@ -113,7 +115,7 @@ def main():
     elif float(argv[3]) < 0 or float(argv[3]) > 1:
         print("Invalid flammability rate.\nExiting...")
         return
-    elif argv[4].lower() not in ['dfs', 'bfs', 'a*']:
+    elif argv[4].lower() not in ['dfs', 'bfs', 'a*', 'a*+']:
         print("Invalid search algorithm. Must be DFS, BFS, or A* (case-insensitive).\nExiting...")
         return
     dim = int(argv[1])
