@@ -33,27 +33,6 @@ def buildMaze(dim, p, firep=0):
     maze[dim - 1][dim - 1] = 1
     return maze
 ##
-#   Colors the path found by the search algorithm chosen with a grey color.
-#   Starts coloring at Goal space and backtracks through previous spaces to reach Start space.
-#
-#   @param maze The populated matrix representing the maze
-#   @param prev The populated dictionary representing the previously accessed space for all spaces
-##
-def tracePath(maze, prev):
-    # prev is None when a search algorithm has failed to find a path
-    if prev is None:
-        #print("No solution")
-        return
-    # Loop and count the number of moves in the path found by the search algorithm
-    numMoves = 0
-    currentSpace = (len(maze) - 1, len(maze) - 1)
-    while currentSpace != (0,0):
-        currentSpace = prev[currentSpace]
-        numMoves += 1
-    # Loop and label the moves taken in order
-    #print("Success")
-    return numMoves
-##
 #   Checks if a space in the maze is "valid".
 #       => Is not an obstructed spaces
 #       => Is not out of the bounds of the maze
@@ -383,32 +362,6 @@ def fireSpread(maze, fireProbability):
                    newMaze[currentRow][currentCol] = 2
                    newFires.append((currentRow, currentCol))
     return newMaze, newFires
-##
-#   Starts DFS and returns True if the run was successful
-#   @param maze The populated matrix representing the maze
-##
-def performDFS(maze):
-    prev = DFS(maze)
-    steps = tracePath(maze, prev)
-    if prev is None:
-        return False
-    return True
-    #print(str(steps) + " steps taken to reach the end.")
-##
-#   Starts BFS
-#
-#   @param maze The populated matrix representing the maze
-##
-def performBFS(maze):
-    prev = BFS(maze)
-    steps = tracePath(maze,prev)
-    ##print(str(steps) + " steps taken to reach the end.")
-##
-#
-##
-def performAStar(maze):
-    prev = aStar(maze)
-    steps = tracePath(maze,prev)
 
 if __name__ == '__main__':
     print("To perform maze simulation, run 'simulate.py'.\nExiting...")
