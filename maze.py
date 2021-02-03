@@ -52,19 +52,21 @@ def isValid(maze, coordinate):
 #   @param maze The populated matrix representing the maze
 #   @param start The start position of the search, default is (0,0)
 ##
-def DFS(maze,start=(0,0),spacesTraveled=[]):
+def DFS(maze,start=(0,0),spacesTraveled=[], target=None):
     fringe = [start]
     visited = []
     for alreadyVisited in spacesTraveled:
         visited.append(alreadyVisited)
     prev = {start : None}
+    if target is None:
+        target = (len(maze) - 1, len(maze) - 1)
     start_time = time.time()
     while fringe:
         (currentRow, currentCol) = fringe.pop()
         ######################################
         # Check the children of currentState #
         ######################################
-        if (currentRow, currentCol) == (len(maze) - 1, len(maze) - 1):
+        if (currentRow, currentCol) == target:
             end_time = time.time()
             elapsed_time = end_time - start_time
             #print(str(elapsed_time) + "s to find path with DFS")
