@@ -4,37 +4,45 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 ##
-#   Performs a Depth-First Search on the maze starting at (0,0) to seek the target (fire) space.
+#   Performs a Depth-First Search on the maze starting at (0,0) to seek the fire space.
 #
 #   @param maze The populated matrix representing the maze
 #   @param start The start position of the search, default is (0,0)
-#   @param target The target position of the search, default set to the goal space
 ##
-def findPathtoFire(maze, start=(0,0), target=None):
+def findPathtoFire(maze, start=(0,0)):
+    # Finds the fire space in the maze
+    def findFire(maze):
+        for r, row in enumerate(maze):
+            for c, col in enumerate(row):
+                if maze[r][c] == 2:
+                    return (r,c)
+        return None
+    # Tests if a space is not obstructed (as opposed to valid to move on to)
     def isNotObstructed(maze, coordinate):
         if coordinate[0] < 0 or coordinate[0] >= len(maze) or coordinate[1] < 0 or coordinate[1] >= len(maze):
             return False
         if maze[coordinate[0]][coordinate[1]] != 0:
             return True
         return False
+    # If there is no existing fire space, there is no path from start to fire space
+    if findFire(maze) is None:
+        return False
     fringe = [start]
     visited = []
     for alreadyVisited in spacesTraveled:
         visited.append(alreadyVisited)
     prev = {start : None}
-    if target is None:
-        target = (len(maze) - 1, len(maze) - 1)
     start_time = time.time()
     while fringe:
         (currentRow, currentCol) = fringe.pop()
         ######################################
         # Check the children of currentState #
         ######################################
-        if (currentRow, currentCol) == target:
+        if maze[currentRow][currentCol] == 2:
             end_time = time.time()
             elapsed_time = end_time - start_time
             #print(str(elapsed_time) + "s to find path with DFS")
-            return prev
+            return True
         #upChild
         if isValid(maze, (currentRow - 1, currentCol)) and (currentRow - 1, currentCol) not in visited:
             fringe.append((currentRow - 1, currentCol))
@@ -57,7 +65,7 @@ def findPathtoFire(maze, start=(0,0), target=None):
         # before any moves up or left.
         #################################################################################################
         visited.append((currentRow, currentCol))
-    return None
+    return False
 ##
 #   Generates plotfor obstacle density p vs. probability that S can be reached from G (Problem 2)
 #
@@ -151,6 +159,7 @@ def BFS_AstarVSp(dim, numRunsPerP):
     for xy in zip(obstacle_density, avgNodesBFS_Astar):
         ax.annotate('(%s, %s)' % xy, xy=xy, xytext=(xy[0], xy[1]+0.01), xycoords='data')
     plt.show()
+##
 #   Driver function
 #
 #   @argv[1] The dimension of the dim by dim maze

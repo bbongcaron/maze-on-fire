@@ -123,14 +123,6 @@ def main():
     algorithm = argv[4]
     # Generate a random maze
     maze = buildMaze(dim, occProbability, firep)
-    # Finds the fire space in the maze
-    def findFire(maze):
-        for r, row in enumerate(maze):
-            for c, col in enumerate(row):
-                if maze[r][c] == 2:
-                    return (r,c)
-        return None
-    print(findFire(maze))
     # Throw maze out if there is no path from start to goal
     while DFS(maze) is None:
         maze = buildMaze(dim, occProbability, firep)
@@ -144,7 +136,6 @@ def main():
     pygame.draw.rect(window, (0,0,255), origin, width=0)
     pygame.draw.rect(window, (0,0,0), origin, width=1)
     pygame.display.update()
-
     attemptedPath = False
     # Overall window loop
     while show:
