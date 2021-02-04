@@ -173,10 +173,8 @@ def strategyOneWinsVSflammability(dim, numRunsPerQ):
             # Generate a random maze
             maze = buildMaze(dim, p, q)
             # Throw maze out if there is no path from start to goal or start to fire
-            numThrowAways = 0
-            while numThrowAways < 1000 and (DFS(maze) is None or findPathtoFire(maze) is None):
+            while DFS(maze) is None or findPathtoFire(maze) is None:
                 maze = buildMaze(dim, p, q)
-                numThrowAways += 1
             if numThrowAways == 1000:
                 percentDone = "100% done..."
                 print(percentDone, end="\r")
@@ -190,7 +188,7 @@ def strategyOneWinsVSflammability(dim, numRunsPerQ):
             # Print percent progress
             percentDone = str((i+1)*100/numRunsPerQ) + "% done..."
             print(percentDone, end="\r")
-            
+
         print("\t" + str(currentWins) + " sucesses on q = " + str(q) + "!")
         avgForThisQ = currentWins / numRunsPerQ
         print("\tsuccessRate = " + str(avgForThisQ*100) + "% for q = " + str(q) + ".")
