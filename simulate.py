@@ -94,7 +94,7 @@ def pVSsuccessRateDFS(dim, numRunsPerP):
                 numSuccesses += 1
         successRate = float(numSuccesses / numRunsPerP)
         successRates.append(successRate)
-        p = round(p + 0.1, 1)
+        p = round(p + 0.01, 2)
     print("Searching and data analysis complete!")
     ## Plot building + settings
     fig, ax = plt.subplots(figsize=(12,8))
@@ -109,11 +109,12 @@ def pVSsuccessRateDFS(dim, numRunsPerP):
     ax.set_ylabel("Probability that S can be reached from G")
     plt.xticks(np.arange(0.0, 1, 0.1))
     plt.grid(b=True, which='major')
+    plt.grid(b=True, which='minor')
     plt.minorticks_on()
     plt.title('Obstacle density p vs. Probability that S can be reached from G \n (in ' + str(numRunsPerP) + ' unique maze runs for each obstacle density)\n w/dim = ' + str(dim))
     # Label point coordinates above each point
-    for xy in zip(obstacle_density, successRates):
-        ax.annotate('(%s, %s)' % xy, xy=xy, xytext=(xy[0], xy[1]+0.01), xycoords='data')
+    #for xy in zip(obstacle_density, successRates):
+        #ax.annotate('(%s, %s)' % xy, xy=xy, xytext=(xy[0], xy[1]+0.01), xycoords='data')
     plt.show()
     return
 ##
@@ -140,7 +141,7 @@ def BFS_AstarVSp(dim, numRunsPerP):
             nodesAstar = aStar(maze)[1]
             currentSum += nodesBFS - nodesAstar
         avgNodesBFS_Astar.append(currentSum / numRunsPerP)
-        p = round(p + 0.1, 1)
+        p = round(p + 0.01, 2)
     print("Searching and data analysis complete!")
     ## Plot building + settings
     fig, ax = plt.subplots(figsize=(12,8))
@@ -153,12 +154,13 @@ def BFS_AstarVSp(dim, numRunsPerP):
     ax.yaxis.set_ticks_position('left')
     plt.xticks(np.arange(0.0, 1, 0.1))
     plt.grid(b=True, which='major')
+    plt.grid(b=True, which='minor')
     plt.minorticks_on()
     ax.set_xlabel('Obstacle Density (p)')
     ax.set_ylabel("number of nodes explored by BFS - number of nodes explored by A*")
     plt.title('Obstacle density p vs. number of nodes explored by BFS - number of nodes explored by A*\n (in ' + str(numRunsPerP) + ' unique maze runs for each obstacle density)\n w/dim = ' + str(dim))
-    for xy in zip(obstacle_density, avgNodesBFS_Astar):
-        ax.annotate('(%s, %s)' % xy, xy=xy, xytext=(xy[0], xy[1]+0.01), xycoords='data')
+    #for xy in zip(obstacle_density, avgNodesBFS_Astar):
+        #ax.annotate('(%s, %s)' % xy, xy=xy, xytext=(xy[0], xy[1]+0.01), xycoords='data')
     plt.show()
 ##
 #   Generates plot for flammability rate q vs. % success rate @q (Problem 6) for Strategy 1
@@ -195,7 +197,7 @@ def strategyOneWinsVSflammability(dim, numRunsPerQ):
         avgForThisQ = currentWins / numRunsPerQ
         print("\tsuccessRate = " + str(avgForThisQ*100) + "% for q = " + str(q) + ".")
         averageSuccesses.append(avgForThisQ*100)
-        q = round(q + 0.1, 1)
+        q = round(q + 0.01, 2)
     print(averageSuccesses)
     print(flammability)
     print("Searching and data analysis complete!")
@@ -211,12 +213,13 @@ def strategyOneWinsVSflammability(dim, numRunsPerQ):
     ax.yaxis.set_ticks_position('left')
     plt.xticks(np.arange(0.0, 1, 0.1))
     plt.grid(b=True, which='major')
+    plt.grid(b=True, which='minor', linestyle='--')
     plt.minorticks_on()
     ax.set_xlabel('Flammability Rate (q)')
     ax.set_ylabel("% Success Rate")
     plt.title('[STRATEGY 1] Flammability Rate q vs. % Success Rate\n (in ' + str(numRunsPerQ) + ' unique maze runs for each flammability rate)\n w/dim = ' + str(dim) + " and p = 0.3")
-    for xy in zip(flammability, averageSuccesses):
-        ax.annotate('(%s, %s)' % xy, xy=xy, xytext=(xy[0], xy[1]+0.01), xycoords='data')
+    #for xy in zip(flammability, averageSuccesses):
+        #ax.annotate('(%s, %s)' % xy, xy=xy, xytext=(xy[0], xy[1]+0.01), xycoords='data')
     plt.show()
 ##
 #   Generates plot for flammability rate q vs. % success rate @q (Problem 6) for Strategy 2
@@ -253,7 +256,7 @@ def strategyTwoWinsVSflammability(dim, numRunsPerQ):
         avgForThisQ = currentWins / numRunsPerQ
         print("\tsuccessRate = " + str(avgForThisQ*100) + "% for q = " + str(q) + ".")
         averageSuccesses.append(avgForThisQ*100)
-        q = round(q + 0.1, 1)
+        q = round(q + 0.01, 2)
     print(averageSuccesses)
     print(flammability)
     print("Searching and data analysis complete!")
@@ -269,12 +272,13 @@ def strategyTwoWinsVSflammability(dim, numRunsPerQ):
     ax.yaxis.set_ticks_position('left')
     plt.xticks(np.arange(0.0, 1, 0.1))
     plt.grid(b=True, which='major')
+    plt.grid(b=True, which='minor')
     plt.minorticks_on()
     ax.set_xlabel('Flammability Rate (q)')
     ax.set_ylabel("% Success Rate")
     plt.title('[STRATEGY 2] Flammability Rate q vs. % Success Rate\n (in ' + str(numRunsPerQ) + ' unique maze runs for each flammability rate)\n w/dim = ' + str(dim) + " and p = 0.3")
-    for xy in zip(flammability, averageSuccesses):
-        ax.annotate('(%s, %s)' % xy, xy=xy, xytext=(xy[0], xy[1]+0.01), xycoords='data')
+    #for xy in zip(flammability, averageSuccesses):
+        #ax.annotate('(%s, %s)' % xy, xy=xy, xytext=(xy[0], xy[1]+0.01), xycoords='data')
     plt.show()
 ##
 #   Generates plot for flammability rate q vs. % success rate @q (Problem 6) for Strategy 3
@@ -311,7 +315,7 @@ def strategyThreeWinsVSflammability(dim, numRunsPerQ):
         avgForThisQ = currentWins / numRunsPerQ
         print("\tsuccessRate = " + str(avgForThisQ*100) + "% for q = " + str(q) + ".")
         averageSuccesses.append(avgForThisQ*100)
-        q = round(q + 0.1, 1)
+        q = round(q + 0.01, 2)
     print(averageSuccesses)
     print(flammability)
     print("Searching and data analysis complete!")
@@ -327,12 +331,13 @@ def strategyThreeWinsVSflammability(dim, numRunsPerQ):
     ax.yaxis.set_ticks_position('left')
     plt.xticks(np.arange(0.0, 1, 0.1))
     plt.grid(b=True, which='major')
+    plt.grid(b=True, which='minor')
     plt.minorticks_on()
     ax.set_xlabel('Flammability Rate (q)')
     ax.set_ylabel("% Success Rate")
     plt.title('[STRATEGY 3] Flammability Rate q vs. % Success Rate\n (in ' + str(numRunsPerQ) + ' unique maze runs for each flammability rate)\n w/dim = ' + str(dim) + " and p = 0.3")
-    for xy in zip(flammability, averageSuccesses):
-        ax.annotate('(%s, %s)' % xy, xy=xy, xytext=(xy[0], xy[1]+0.01), xycoords='data')
+    #for xy in zip(flammability, averageSuccesses):
+        #ax.annotate('(%s, %s)' % xy, xy=xy, xytext=(xy[0], xy[1]+0.01), xycoords='data')
     plt.show()
 ##
 #   Driver function
