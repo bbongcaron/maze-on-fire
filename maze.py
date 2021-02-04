@@ -222,68 +222,59 @@ def aStarPlus(maze, firep, start=(0,0), spacesTraveled=[]):
     # A helper function to help make any node being checked if it's dangerous or not by adding more cost based on
     # if it has a fire nearby or wall nearby.
         addedCost = 0
-        fireCost = (firep * 100) + 3
         if direction == "right":
             if (checkNode[0], checkNode[1]) in spacesTraveled:
                 addedCost += 1
-            if isBurning(maze, (checkNode[0], checkNode[1] + 1)):
-                addedCost += fireCost
-            if not isValid(maze, (checkNode[0], checkNode[1] + 1)):
-                addedCost += 1
-            if isBurning(maze, (checkNode[0] + 1, checkNode[1])):
-                addedCost += fireCost
-            if not isValid(maze, (checkNode[0] + 1, checkNode[1])):
-                addedCost += 1
-            if isBurning(maze, (checkNode[0] - 1, checkNode[1])):
-                addedCost += fireCost
-            if not isValid(maze, (checkNode[0] - 1, checkNode[1])):
-                addedCost += 1
+            addedCost += calcCost(maze, (checkNode[0], checkNode[1] + 1), firep)
+            addedCost += calcCost(maze, (checkNode[0], checkNode[1] + 2), firep)
+            addedCost += calcCost(maze, (checkNode[0] + 1, checkNode[1] + 1), firep)
+            addedCost += calcCost(maze, (checkNode[0] - 1, checkNode[1] + 1), firep)
+            addedCost += calcCost(maze, (checkNode[0] + 1, checkNode[1]), firep)
+            addedCost += calcCost(maze, (checkNode[0] + 2, checkNode[1]), firep)
+            addedCost += calcCost(maze, (checkNode[0] - 1, checkNode[1]), firep)
+            addedCost += calcCost(maze, (checkNode[0] - 2, checkNode[1]), firep)
         if direction == "down":
             if (checkNode[0], checkNode[1]) in spacesTraveled:
                 addedCost += 1
-            if isBurning(maze, (checkNode[0] + 1, checkNode[1])):
-                addedCost += fireCost
-            if not isValid(maze, (checkNode[0] + 1, checkNode[1])):
-                addedCost += 1
-            if isBurning(maze, (checkNode[0], checkNode[1] + 1)):
-                addedCost += fireCost
-            if not isValid(maze, (checkNode[0], checkNode[1] + 1)):
-                addedCost += 1
-            if isBurning(maze, (checkNode[0], checkNode[1] - 1)):
-                addedCost += fireCost
-            if not isValid(maze, (checkNode[0], checkNode[1] - 1)):
-                addedCost += 1
+            addedCost += calcCost(maze, (checkNode[0] + 1, checkNode[1]), firep)
+            addedCost += calcCost(maze, (checkNode[0] + 2, checkNode[1]), firep)
+            addedCost += calcCost(maze, (checkNode[0] + 1, checkNode[1] + 1), firep)
+            addedCost += calcCost(maze, (checkNode[0] + 1, checkNode[1] - 1), firep)
+            addedCost += calcCost(maze, (checkNode[0], checkNode[1] + 1), firep)
+            addedCost += calcCost(maze, (checkNode[0], checkNode[1] + 2), firep)
+            addedCost += calcCost(maze, (checkNode[0], checkNode[1] - 1), firep)
+            addedCost += calcCost(maze, (checkNode[0], checkNode[1] - 2), firep)
         if direction == "left":
             if (checkNode[0], checkNode[1]) in spacesTraveled:
                 addedCost += 1
-            if isBurning(maze, (checkNode[0], checkNode[1] - 1)):
-                addedCost += fireCost
-            if not isValid(maze, (checkNode[0], checkNode[1] - 1)):
-                addedCost += 1
-            if isBurning(maze, (checkNode[0] + 1, checkNode[1])):
-                addedCost += fireCost
-            if not isValid(maze, (checkNode[0] + 1, checkNode[1])):
-                addedCost += 1
-            if isBurning(maze, (checkNode[0] - 1, checkNode[1])):
-                addedCost += fireCost
-            if not isValid(maze, (checkNode[0] - 1, checkNode[1])):
-                addedCost += 1
+            addedCost += calcCost(maze, (checkNode[0], checkNode[1] - 1), firep)
+            addedCost += calcCost(maze, (checkNode[0], checkNode[1] - 2), firep)
+            addedCost += calcCost(maze, (checkNode[0] + 1, checkNode[1] - 1), firep)
+            addedCost += calcCost(maze, (checkNode[0] - 1, checkNode[1] - 1), firep)
+            addedCost += calcCost(maze, (checkNode[0] + 1, checkNode[1]), firep)
+            addedCost += calcCost(maze, (checkNode[0] + 2, checkNode[1]), firep)
+            addedCost += calcCost(maze, (checkNode[0] - 1, checkNode[1]), firep)
+            addedCost += calcCost(maze, (checkNode[0] - 2, checkNode[1]), firep)
         if direction == "up":
             if (checkNode[0], checkNode[1]) in spacesTraveled:
                 addedCost += 1
-            if isBurning(maze, (checkNode[0] - 1, checkNode[1])):
-                addedCost += fireCost
-            if not isValid(maze, (checkNode[0] - 1, checkNode[1])):
-                addedCost += 1
-            if isBurning(maze, (checkNode[0], checkNode[1] + 1)):
-                addedCost += fireCost
-            if not isValid(maze, (checkNode[0], checkNode[1] + 1)):
-                addedCost += 1
-            if isBurning(maze, (checkNode[0], checkNode[1] - 1)):
-                addedCost += fireCost
-            if not isValid(maze, (checkNode[0], checkNode[1] - 1)):
-                addedCost += 1
+            addedCost += calcCost(maze, (checkNode[0] - 1, checkNode[1]), firep)
+            addedCost += calcCost(maze, (checkNode[0] - 2, checkNode[1]), firep)
+            addedCost += calcCost(maze, (checkNode[0] - 1, checkNode[1] - 1), firep)
+            addedCost += calcCost(maze, (checkNode[0] - 1, checkNode[1] + 1), firep)
+            addedCost += calcCost(maze, (checkNode[0], checkNode[1] + 1), firep)
+            addedCost += calcCost(maze, (checkNode[0], checkNode[1] + 2), firep)
+            addedCost += calcCost(maze, (checkNode[0], checkNode[1] - 1), firep)
+            addedCost += calcCost(maze, (checkNode[0], checkNode[1] - 2), firep)
         return addedCost
+    def calcCost(maze, coordinate, firep):
+        spaceCost = 0
+        fireCost = (firep * 100) + 3
+        if isBurning(maze, (coordinate[0], coordinate[1])):
+            spaceCost += fireCost
+        if not isValid(maze, (coordinate[0], coordinate[1])):
+            spaceCost += 1
+        return spaceCost
     while fringeNodes:
         # Find the node which has the lowest distance to the goal
         lowestDistance = min(distances)
