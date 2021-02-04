@@ -84,7 +84,10 @@ def pVSsuccessRateDFS(dim, numRunsPerP):
             print(percentDone, end="\r")
             # Build maze and test if DFS finds a path
             maze = buildMaze(dim, p)
-            isSuccess[i] = performDFS(maze)
+            if DFS(maze) is not None:
+                isSuccess[i] = True
+            else:
+                isSuccess[i] = False
         numSuccesses = 0
         for result in isSuccess:
             if result:
