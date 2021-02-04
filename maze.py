@@ -25,7 +25,7 @@ def buildMaze(dim, p, firep=0):
     while True:
         randx = randrange(dim)
         randy = randrange(dim)
-        if maze[randx][randy] == 1:
+        if maze[randx][randy] == 1 and randx != 0 and randx != (dim - 1) and randy != 0 and randy != (dim - 1):
             maze[randx][randy] = 2
             break
     # Ensure Start and Goal spaces are empty

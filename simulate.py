@@ -1,4 +1,4 @@
-from maze import *
+from render import *
 from matplotlib.pyplot import figure
 import matplotlib.pyplot as plt
 import numpy as np
@@ -29,8 +29,6 @@ def findPathtoFire(maze, start=(0,0)):
         return False
     fringe = [start]
     visited = []
-    for alreadyVisited in spacesTraveled:
-        visited.append(alreadyVisited)
     prev = {start : None}
     start_time = time.time()
     while fringe:
@@ -42,21 +40,21 @@ def findPathtoFire(maze, start=(0,0)):
             end_time = time.time()
             elapsed_time = end_time - start_time
             #print(str(elapsed_time) + "s to find path with DFS")
-            return True
+            return prev
         #upChild
-        if isValid(maze, (currentRow - 1, currentCol)) and (currentRow - 1, currentCol) not in visited:
+        if isNotObstructed(maze, (currentRow - 1, currentCol)) and (currentRow - 1, currentCol) not in visited:
             fringe.append((currentRow - 1, currentCol))
             prev.update({(currentRow - 1, currentCol) : (currentRow, currentCol)})
         #leftChild
-        if isValid(maze, (currentRow, currentCol - 1)) and (currentRow, currentCol - 1) not in visited:
+        if isNotObstructed(maze, (currentRow, currentCol - 1)) and (currentRow, currentCol - 1) not in visited:
             fringe.append((currentRow, currentCol - 1))
             prev.update({(currentRow, currentCol - 1) : (currentRow, currentCol)})
         #downChild
-        if isValid(maze, (currentRow + 1, currentCol)) and (currentRow + 1, currentCol) not in visited:
+        if isNotObstructed(maze, (currentRow + 1, currentCol)) and (currentRow + 1, currentCol) not in visited:
             fringe.append((currentRow + 1, currentCol))
             prev.update({(currentRow + 1, currentCol) : (currentRow, currentCol)})
         #rightChild
-        if isValid(maze, (currentRow, currentCol + 1)) and (currentRow, currentCol + 1) not in visited:
+        if isNotObstructed(maze, (currentRow, currentCol + 1)) and (currentRow, currentCol + 1) not in visited:
             fringe.append((currentRow, currentCol + 1))
             prev.update({(currentRow, currentCol + 1) : (currentRow, currentCol)})
         #################################################################################################
@@ -65,7 +63,7 @@ def findPathtoFire(maze, start=(0,0)):
         # before any moves up or left.
         #################################################################################################
         visited.append((currentRow, currentCol))
-    return False
+    return None
 ##
 #   Generates plotfor obstacle density p vs. probability that S can be reached from G (Problem 2)
 #
@@ -159,21 +157,61 @@ def BFS_AstarVSp(dim, numRunsPerP):
     for xy in zip(obstacle_density, avgNodesBFS_Astar):
         ax.annotate('(%s, %s)' % xy, xy=xy, xytext=(xy[0], xy[1]+0.01), xycoords='data')
     plt.show()
+
+def strategyOneWinsVSflammability(dim, numRunsPerQ):
+    averageSuccesses = []
+    flammability = []
+    p = 0.3
+    q = 0.0
+    while q < 1:
+        flammability.append(q)
+        currentWins = 0
+        print("Currently testing q = " + str(q) + "...")
+        # Make maze window
+        window = pygame.display.set_mode((size,size))
+        for i in range(numRunsPerQ):
+            # Generate a random maze
+            maze = buildMaze(dim, p, q)
+            # Throw maze out if there is no path from start to goal or start to fire
+            numThrowAways = 0
+            while numThrowAways < 1000 and (DFS(maze) is None or findPathtoFire(maze) is None):
+                maze = buildMaze(dim, p, q)
+                numThrowAways += 1
+            if numThrowAways == 1000:
+                percentDone = "100% done..."
+                print(percentDone, end="\r")
+                print("Too many throw-away mazes for q = " + str(q) + ". Skipping this q...")
+                break
+            # Color maze on pygame window
+            grid(window, maze)
+            # Shortest path => bfs
+            if movementOne(window, maze, q, 'bfs') is True:
+                currentWins += 1
+            # Print percent progress
+            percentDone = str((i+1)*100/numRunsPerQ) + "% done..."
+            print(percentDone, end="\r")
+            
+        print("\t" + str(currentWins) + " sucesses on q = " + str(q) + "!")
+        avgForThisQ = currentWins / numRunsPerQ
+        print("\tsuccessRate = " + str(avgForThisQ*100) + "% for q = " + str(q) + ".")
+        averageSuccesses.append(avgForThisQ)
+        q = round(q + 0.1, 1)
 ##
 #   Driver function
 #
 #   @argv[1] The dimension of the dim by dim maze
-#   @argv[2] The number of times a maze is generated and tested for each obstacle density
+#   @argv[2] The number of times a maze is generated and tested for each independent variable value
 #   @argv[3] The probability that fire will spread to an adjacent space
 ##
 def main():
     dim = int(argv[1])
-    numRunsPerP = int(argv[2])
+    numRunsPerX = int(argv[2])
     fireProbability = float(argv[3])
     if dim < 1:
         print("Dimension is too small to generate a maze.")
-    #pVSsuccessRateDFS(dim, numRunsPerP)
-    BFS_AstarVSp(dim, numRunsPerP)
+    #pVSsuccessRateDFS(dim, numRunsPerX)
+    #BFS_AstarVSp(dim, numRunsPerX)
+    strategyOneWinsVSflammability(dim, numRunsPerX)
 
 if __name__ == '__main__':
     print("\nTo render and debug a singular maze, run 'render.py'.\nContinuing...\n")
