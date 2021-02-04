@@ -269,7 +269,7 @@ def aStarPlus(maze, firep, start=(0,0), spacesTraveled=[]):
         return addedCost
     def calcCost(maze, coordinate, firep):
         spaceCost = 0
-        fireCost = (firep * 100) + 3
+        fireCost = (firep * 50) + 3
         if isBurning(maze, (coordinate[0], coordinate[1])):
             spaceCost += fireCost
         if not isValid(maze, (coordinate[0], coordinate[1])):
