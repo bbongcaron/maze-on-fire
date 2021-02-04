@@ -157,7 +157,12 @@ def BFS_AstarVSp(dim, numRunsPerP):
     for xy in zip(obstacle_density, avgNodesBFS_Astar):
         ax.annotate('(%s, %s)' % xy, xy=xy, xytext=(xy[0], xy[1]+0.01), xycoords='data')
     plt.show()
-
+##
+#   Generates plot for flammability rate q vs. % success rate @q (Problem 6) for Strategy 1
+#
+#   @param dim The given dimension to construct the dim by dim matrix
+#   @param numRunsPerP The number of times a maze is generated and tested for each obstacle density
+##
 def strategyOneWinsVSflammability(dim, numRunsPerQ):
     averageSuccesses = []
     flammability = []
@@ -175,41 +180,125 @@ def strategyOneWinsVSflammability(dim, numRunsPerQ):
             # Throw maze out if there is no path from start to goal or start to fire
             while DFS(maze) is None or findPathtoFire(maze) is None:
                 maze = buildMaze(dim, p, q)
-            if numThrowAways == 1000:
-                percentDone = "100% done..."
-                print(percentDone, end="\r")
-                print("Too many throw-away mazes for q = " + str(q) + ". Skipping this q...")
-                break
             # Color maze on pygame window
             grid(window, maze)
-            # Shortest path => bfs
-            if movementOne(window, maze, q, 'bfs') is True:
+            # Shortest path => a*
+            if movementOne(window, maze, q, 'a*') is True:
                 currentWins += 1
             # Print percent progress
             percentDone = str((i+1)*100/numRunsPerQ) + "% done..."
             print(percentDone, end="\r")
-
         print("\t" + str(currentWins) + " sucesses on q = " + str(q) + "!")
         avgForThisQ = currentWins / numRunsPerQ
         print("\tsuccessRate = " + str(avgForThisQ*100) + "% for q = " + str(q) + ".")
-        averageSuccesses.append(avgForThisQ)
+        averageSuccesses.append(avgForThisQ*100)
         q = round(q + 0.1, 1)
+    print(averageSuccesses)
+    print(flammability)
+    print("Searching and data analysis complete!")
+    pygame.display.quit()
+    ## Plot building + settings
+    fig, ax = plt.subplots(figsize=(12,8))
+    plt.rcParams["figure.figsize"] = (40,40)
+    ax.plot(flammability, averageSuccesses, marker='o')
+    ax.spines['left'].set_position(('data',0))
+    ax.spines['top'].set_color('none')
+    ax.spines['right'].set_color('none')
+    ax.xaxis.set_ticks_position('bottom')
+    ax.yaxis.set_ticks_position('left')
+    plt.xticks(np.arange(0.0, 1, 0.1))
+    plt.grid(b=True, which='major')
+    plt.minorticks_on()
+    ax.set_xlabel('Flammability Rate (q)')
+    ax.set_ylabel("% Success Rate")
+    plt.title('[STRATEGY 1] Flammability Rate q vs. % Success Rate\n (in ' + str(numRunsPerQ) + ' unique maze runs for each flammability rate)\n w/dim = ' + str(dim) + " and p = 0.3")
+    for xy in zip(flammability, averageSuccesses):
+        ax.annotate('(%s, %s)' % xy, xy=xy, xytext=(xy[0], xy[1]+0.01), xycoords='data')
+    plt.show()
+##
+#   Generates plot for flammability rate q vs. % success rate @q (Problem 6) for Strategy 2
+#
+#   @param dim The given dimension to construct the dim by dim matrix
+#   @param numRunsPerP The number of times a maze is generated and tested for each obstacle density
+##
+def strategyTwoWinsVSflammability(dim, numRunsPerQ):
+    averageSuccesses = []
+    flammability = []
+    p = 0.3
+    q = 0.0
+    while q < 1:
+        flammability.append(q)
+        currentWins = 0
+        print("Currently testing q = " + str(q) + "...")
+        # Make maze window
+        window = pygame.display.set_mode((size,size))
+        for i in range(numRunsPerQ):
+            # Generate a random maze
+            maze = buildMaze(dim, p, q)
+            # Throw maze out if there is no path from start to goal or start to fire
+            while DFS(maze) is None or findPathtoFire(maze) is None:
+                maze = buildMaze(dim, p, q)
+            # Color maze on pygame window
+            grid(window, maze)
+            # Shortest path => a*
+            if movementTwo(window, maze, q, 'a*') is True:
+                currentWins += 1
+            # Print percent progress
+            percentDone = str((i+1)*100/numRunsPerQ) + "% done..."
+            print(percentDone, end="\r")
+        print("\t" + str(currentWins) + " sucesses on q = " + str(q) + "!")
+        avgForThisQ = currentWins / numRunsPerQ
+        print("\tsuccessRate = " + str(avgForThisQ*100) + "% for q = " + str(q) + ".")
+        averageSuccesses.append(avgForThisQ*100)
+        q = round(q + 0.1, 1)
+    print(averageSuccesses)
+    print(flammability)
+    print("Searching and data analysis complete!")
+    pygame.display.quit()
+    ## Plot building + settings
+    fig, ax = plt.subplots(figsize=(12,8))
+    plt.rcParams["figure.figsize"] = (40,40)
+    ax.plot(flammability, averageSuccesses, marker='o')
+    ax.spines['left'].set_position(('data',0))
+    ax.spines['top'].set_color('none')
+    ax.spines['right'].set_color('none')
+    ax.xaxis.set_ticks_position('bottom')
+    ax.yaxis.set_ticks_position('left')
+    plt.xticks(np.arange(0.0, 1, 0.1))
+    plt.grid(b=True, which='major')
+    plt.minorticks_on()
+    ax.set_xlabel('Flammability Rate (q)')
+    ax.set_ylabel("% Success Rate")
+    plt.title('[STRATEGY 2] Flammability Rate q vs. % Success Rate\n (in ' + str(numRunsPerQ) + ' unique maze runs for each flammability rate)\n w/dim = ' + str(dim) + " and p = 0.3")
+    for xy in zip(flammability, averageSuccesses):
+        ax.annotate('(%s, %s)' % xy, xy=xy, xytext=(xy[0], xy[1]+0.01), xycoords='data')
+    plt.show()
 ##
 #   Driver function
 #
 #   @argv[1] The dimension of the dim by dim maze
 #   @argv[2] The number of times a maze is generated and tested for each independent variable value
-#   @argv[3] The probability that fire will spread to an adjacent space
 ##
 def main():
     dim = int(argv[1])
     numRunsPerX = int(argv[2])
-    fireProbability = float(argv[3])
     if dim < 1:
         print("Dimension is too small to generate a maze.")
-    #pVSsuccessRateDFS(dim, numRunsPerX)
-    #BFS_AstarVSp(dim, numRunsPerX)
-    strategyOneWinsVSflammability(dim, numRunsPerX)
+    print("Please select which data to analyze.")
+    print("\t1. Obstacle Density p vs. Probability that S can be reached from G [Problem 2]")
+    print("\t2. Obstacle Density p vs. (# nodes explored w/BFS - # nodes explored w/A*) [Problem 3]")
+    print("\t3. Strategy 1: Flammability q vs. % Success Rate @p = 0.3 [Problem 6]")
+    print("\t4. Strategy 2: Flammability q vs. % Success Rate @p = 0.3 [Problem 6]")
+    print("\t5. Strategy 3: Flammability q vs. % Success Rate @p = 0.3 [Problem 6]\n")
+    selection = int(input("Your Selection > "))
+    if selection == 1:
+        pVSsuccessRateDFS(dim, numRunsPerX)
+    elif selection == 2:
+        BFS_AstarVSp(dim, numRunsPerX)
+    elif selection == 3:
+        strategyOneWinsVSflammability(dim, numRunsPerX)
+    elif selection == 4:
+        strategyTwoWinsVSflammability(dim, numRunsPerX)
 
 if __name__ == '__main__':
     print("\nTo render and debug a singular maze, run 'render.py'.\nContinuing...\n")
