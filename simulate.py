@@ -4,6 +4,61 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 ##
+#   Performs a Depth-First Search on the maze starting at (0,0) to seek the target (fire) space.
+#
+#   @param maze The populated matrix representing the maze
+#   @param start The start position of the search, default is (0,0)
+#   @param target The target position of the search, default set to the goal space
+##
+def findPathtoFire(maze, start=(0,0), target=None):
+    def isNotObstructed(maze, coordinate):
+        if coordinate[0] < 0 or coordinate[0] >= len(maze) or coordinate[1] < 0 or coordinate[1] >= len(maze):
+            return False
+        if maze[coordinate[0]][coordinate[1]] != 0:
+            return True
+        return False
+    fringe = [start]
+    visited = []
+    for alreadyVisited in spacesTraveled:
+        visited.append(alreadyVisited)
+    prev = {start : None}
+    if target is None:
+        target = (len(maze) - 1, len(maze) - 1)
+    start_time = time.time()
+    while fringe:
+        (currentRow, currentCol) = fringe.pop()
+        ######################################
+        # Check the children of currentState #
+        ######################################
+        if (currentRow, currentCol) == target:
+            end_time = time.time()
+            elapsed_time = end_time - start_time
+            #print(str(elapsed_time) + "s to find path with DFS")
+            return prev
+        #upChild
+        if isValid(maze, (currentRow - 1, currentCol)) and (currentRow - 1, currentCol) not in visited:
+            fringe.append((currentRow - 1, currentCol))
+            prev.update({(currentRow - 1, currentCol) : (currentRow, currentCol)})
+        #leftChild
+        if isValid(maze, (currentRow, currentCol - 1)) and (currentRow, currentCol - 1) not in visited:
+            fringe.append((currentRow, currentCol - 1))
+            prev.update({(currentRow, currentCol - 1) : (currentRow, currentCol)})
+        #downChild
+        if isValid(maze, (currentRow + 1, currentCol)) and (currentRow + 1, currentCol) not in visited:
+            fringe.append((currentRow + 1, currentCol))
+            prev.update({(currentRow + 1, currentCol) : (currentRow, currentCol)})
+        #rightChild
+        if isValid(maze, (currentRow, currentCol + 1)) and (currentRow, currentCol + 1) not in visited:
+            fringe.append((currentRow, currentCol + 1))
+            prev.update({(currentRow, currentCol + 1) : (currentRow, currentCol)})
+        #################################################################################################
+        # Order (up,left,down,right) chosen so that any moves to the right or down (which is closer # to
+        # the Goal space, assuming no obstructions) are placed at the top of the stack and popped off
+        # before any moves up or left.
+        #################################################################################################
+        visited.append((currentRow, currentCol))
+    return None
+##
 #   Generates plotfor obstacle density p vs. probability that S can be reached from G (Problem 2)
 #
 #   @param dim The given dimension to construct the dim by dim matrix
