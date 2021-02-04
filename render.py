@@ -130,7 +130,7 @@ def movementTwo(window, maze, firep, algorithm):
         elif algorithm == "bfs":
             prev = BFS(maze, agentLocation, spacesTraveled)[0]
         elif algorithm == "a*":
-            prev = aStar(maze, agentLocation, spacesTraveled)[0]
+            prev = aStar(maze, agentLocation)[0]
         elif algorithm == "a*+":
             prev = aStarPlus(maze, firep, agentLocation, spacesTraveled)[0]
         else:

@@ -149,12 +149,10 @@ def BFS(maze, start=(0,0), spacesTraveled=[]):
 #   @param maze The populated matrix representing the maze
 #   @param start The start position of the search, default is (0,0)
 ##
-def aStar(maze, start=(0,0), spacesTraveled=[]):
+def aStar(maze, start=(0,0)):
     fringeNodes = [start]
     distances = [0]
     visited = []
-    for alreadyVisited in spacesTraveled:
-        visited.append(alreadyVisited)
     prev = {start: None}
     nodesExplored = 0
     start_time = time.time()
