@@ -65,7 +65,7 @@ def movementOne(window, maze, firep, algorithm):
     elif algorithm == "a*":
         prev = aStar(maze, agentLocation)[0]
     elif algorithm == "a*+":
-        prev = aStarPlus(maze, agentLocation)[0]
+        prev = aStarPlus(maze, agentLocation, [], firep)[0]
     else:
         return False
     # The "Game loop"
@@ -132,7 +132,7 @@ def movementTwo(window, maze, firep, algorithm):
         elif algorithm == "a*":
             prev = aStar(maze, agentLocation, spacesTraveled)[0]
         elif algorithm == "a*+":
-            prev = aStarPlus(maze, agentLocation, spacesTraveled)[0]
+            prev = aStarPlus(maze, agentLocation, spacesTraveled, firep)[0]
         else:
             return False
         currentSpace = (dim - 1, dim - 1)
