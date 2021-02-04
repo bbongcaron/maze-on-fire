@@ -222,7 +222,7 @@ def aStarPlus(maze, firep, start=(0,0), spacesTraveled=[]):
     # A helper function to help make any node being checked if it's dangerous or not by adding more cost based on
     # if it has a fire nearby or wall nearby.
         addedCost = 0
-        fireCost = (firep * 50) + 3
+        fireCost = (firep * 100) + 3
         if direction == "right":
             if (checkNode[0], checkNode[1]) in spacesTraveled:
                 addedCost += 1
