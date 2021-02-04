@@ -1,4 +1,4 @@
-from render import *
+from maze import *
 from matplotlib.pyplot import figure
 import matplotlib.pyplot as plt
 import numpy as np
