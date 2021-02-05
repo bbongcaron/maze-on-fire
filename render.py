@@ -1,7 +1,7 @@
 from maze import *
 import pygame, numpy
 size = 900
-sleepTime = 0.01
+sleepTime = 0
 ##
 #   Draws the unsolved maze.
 #

@@ -1,8 +1,8 @@
 from render import *
 from matplotlib.pyplot import figure
+from matplotlib.ticker import MultipleLocator
 import matplotlib.pyplot as plt
 import numpy as np
-import pandas as pd
 ##
 #   Performs a Depth-First Search on the maze starting at (0,0) to seek the fire space.
 #
@@ -73,7 +73,7 @@ def findPathtoFire(maze, start=(0,0)):
 def pVSsuccessRateDFS(dim, numRunsPerP):
     successRates = []
     obstacle_density = []
-    p = 0.0
+    p = 0.02
     while p < 1:
         obstacle_density.append(p)
         print("Currently testing p = " + str(p) + "...")
@@ -94,7 +94,7 @@ def pVSsuccessRateDFS(dim, numRunsPerP):
                 numSuccesses += 1
         successRate = float(numSuccesses / numRunsPerP)
         successRates.append(successRate)
-        p = round(p + 0.01, 2)
+        p = round(p + 0.02, 2)
     print("Searching and data analysis complete!")
     ## Plot building + settings
     fig, ax = plt.subplots(figsize=(12,8))
@@ -107,9 +107,9 @@ def pVSsuccessRateDFS(dim, numRunsPerP):
     ax.yaxis.set_ticks_position('left')
     ax.set_xlabel('Obstacle Density (p)')
     ax.set_ylabel("Probability that S can be reached from G")
-    plt.xticks(np.arange(0.0, 1, 0.1))
+    plt.xticks(np.arange(0.0, 1.1, 0.1))
+    plt.yticks(np.arange(0.0, 1.1, 0.1))
     plt.grid(b=True, which='major')
-    plt.grid(b=True, which='minor')
     plt.minorticks_on()
     plt.title('Obstacle density p vs. Probability that S can be reached from G \n (in ' + str(numRunsPerP) + ' unique maze runs for each obstacle density)\n w/dim = ' + str(dim))
     # Label point coordinates above each point
@@ -127,7 +127,7 @@ def pVSsuccessRateDFS(dim, numRunsPerP):
 def BFS_AstarVSp(dim, numRunsPerP):
     avgNodesBFS_Astar = []
     obstacle_density = []
-    p = 0.0
+    p = 0.02
     while p < 1:
         obstacle_density.append(p)
         currentSum = 0
@@ -141,7 +141,7 @@ def BFS_AstarVSp(dim, numRunsPerP):
             nodesAstar = aStar(maze)[1]
             currentSum += nodesBFS - nodesAstar
         avgNodesBFS_Astar.append(currentSum / numRunsPerP)
-        p = round(p + 0.01, 2)
+        p = round(p + 0.02, 2)
     print("Searching and data analysis complete!")
     ## Plot building + settings
     fig, ax = plt.subplots(figsize=(12,8))
@@ -152,9 +152,8 @@ def BFS_AstarVSp(dim, numRunsPerP):
     ax.spines['right'].set_color('none')
     ax.xaxis.set_ticks_position('bottom')
     ax.yaxis.set_ticks_position('left')
-    plt.xticks(np.arange(0.0, 1, 0.1))
+    plt.xticks(np.arange(0.0, 1.1, 0.1))
     plt.grid(b=True, which='major')
-    plt.grid(b=True, which='minor')
     plt.minorticks_on()
     ax.set_xlabel('Obstacle Density (p)')
     ax.set_ylabel("number of nodes explored by BFS - number of nodes explored by A*")
@@ -173,7 +172,7 @@ def strategyOneWinsVSflammability(dim, numRunsPerQ):
     flammability = []
     p = 0.3
     q = 0.0
-    while q < 1:
+    while q <= 1:
         flammability.append(q)
         currentWins = 0
         print("Currently testing q = " + str(q) + "...")
@@ -197,7 +196,7 @@ def strategyOneWinsVSflammability(dim, numRunsPerQ):
         avgForThisQ = currentWins / numRunsPerQ
         print("\tsuccessRate = " + str(avgForThisQ*100) + "% for q = " + str(q) + ".")
         averageSuccesses.append(avgForThisQ*100)
-        q = round(q + 0.01, 2)
+        q = round(q + 0.02, 2)
     print(averageSuccesses)
     print(flammability)
     print("Searching and data analysis complete!")
@@ -211,9 +210,9 @@ def strategyOneWinsVSflammability(dim, numRunsPerQ):
     ax.spines['right'].set_color('none')
     ax.xaxis.set_ticks_position('bottom')
     ax.yaxis.set_ticks_position('left')
-    plt.xticks(np.arange(0.0, 1, 0.1))
+    plt.xticks(np.arange(0.0, 1.1, 0.1))
+    plt.yticks(np.arange(0.0, 105.0, 5))
     plt.grid(b=True, which='major')
-    plt.grid(b=True, which='minor', linestyle='--')
     plt.minorticks_on()
     ax.set_xlabel('Flammability Rate (q)')
     ax.set_ylabel("% Success Rate")
@@ -232,7 +231,7 @@ def strategyTwoWinsVSflammability(dim, numRunsPerQ):
     flammability = []
     p = 0.3
     q = 0.0
-    while q < 1:
+    while q <= 1:
         flammability.append(q)
         currentWins = 0
         print("Currently testing q = " + str(q) + "...")
@@ -256,7 +255,7 @@ def strategyTwoWinsVSflammability(dim, numRunsPerQ):
         avgForThisQ = currentWins / numRunsPerQ
         print("\tsuccessRate = " + str(avgForThisQ*100) + "% for q = " + str(q) + ".")
         averageSuccesses.append(avgForThisQ*100)
-        q = round(q + 0.01, 2)
+        q = round(q + 0.02, 2)
     print(averageSuccesses)
     print(flammability)
     print("Searching and data analysis complete!")
@@ -270,9 +269,9 @@ def strategyTwoWinsVSflammability(dim, numRunsPerQ):
     ax.spines['right'].set_color('none')
     ax.xaxis.set_ticks_position('bottom')
     ax.yaxis.set_ticks_position('left')
-    plt.xticks(np.arange(0.0, 1, 0.1))
+    plt.xticks(np.arange(0.0, 1.1, 0.1))
+    plt.yticks(np.arange(0.0, 105.0, 5))
     plt.grid(b=True, which='major')
-    plt.grid(b=True, which='minor')
     plt.minorticks_on()
     ax.set_xlabel('Flammability Rate (q)')
     ax.set_ylabel("% Success Rate")
@@ -291,7 +290,7 @@ def strategyThreeWinsVSflammability(dim, numRunsPerQ):
     flammability = []
     p = 0.3
     q = 0.0
-    while q < 1:
+    while q <= 1:
         flammability.append(q)
         currentWins = 0
         print("Currently testing q = " + str(q) + "...")
@@ -315,24 +314,24 @@ def strategyThreeWinsVSflammability(dim, numRunsPerQ):
         avgForThisQ = currentWins / numRunsPerQ
         print("\tsuccessRate = " + str(avgForThisQ*100) + "% for q = " + str(q) + ".")
         averageSuccesses.append(avgForThisQ*100)
-        q = round(q + 0.01, 2)
+        q = round(q + 0.02, 2)
     print(averageSuccesses)
     print(flammability)
     print("Searching and data analysis complete!")
     pygame.display.quit()
     ## Plot building + settings
-    fig, ax = plt.subplots(figsize=(12,8))
-    plt.rcParams["figure.figsize"] = (40,40)
+    fig, ax = plt.subplots(figsize=(10,8))
+    plt.rcParams["figure.figsize"] = (40,30)
     ax.plot(flammability, averageSuccesses, marker='o')
     ax.spines['left'].set_position(('data',0))
     ax.spines['top'].set_color('none')
     ax.spines['right'].set_color('none')
     ax.xaxis.set_ticks_position('bottom')
     ax.yaxis.set_ticks_position('left')
-    plt.xticks(np.arange(0.0, 1, 0.1))
-    plt.grid(b=True, which='major')
-    plt.grid(b=True, which='minor')
+    plt.xticks(np.arange(0.0, 1.1, 0.1))
+    plt.yticks(np.arange(0.0, 105.0, 5))
     plt.minorticks_on()
+    plt.grid(b=True, which='major')
     ax.set_xlabel('Flammability Rate (q)')
     ax.set_ylabel("% Success Rate")
     plt.title('[STRATEGY 3] Flammability Rate q vs. % Success Rate\n (in ' + str(numRunsPerQ) + ' unique maze runs for each flammability rate)\n w/dim = ' + str(dim) + " and p = 0.3")
