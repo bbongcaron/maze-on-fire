@@ -143,15 +143,15 @@ def movementTwo(window, maze, firep, algorithm):
         while prev[currentSpace] != agentLocation:
             currentSpace = prev[currentSpace]
         # Color the previous space gray
-        prevSpace = pygame.Rect(prev[currentSpace][1]*spaceDim, prev[currentSpace][0]*spaceDim, spaceDim, spaceDim)
-        pygame.draw.rect(window, (150, 150, 150), prevSpace, width=0)
-        pygame.draw.rect(window, (0,0,0), prevSpace, width=1)
-        pygame.display.update()
+        #prevSpace = pygame.Rect(prev[currentSpace][1]*spaceDim, prev[currentSpace][0]*spaceDim, spaceDim, spaceDim)
+        #pygame.draw.rect(window, (150, 150, 150), prevSpace, width=0)
+        #pygame.draw.rect(window, (0,0,0), prevSpace, width=1)
+        #pygame.display.update()
         # Color the agent's new location blue
-        newCurrent = pygame.Rect(currentSpace[1]*spaceDim, currentSpace[0]*spaceDim, spaceDim,  spaceDim)
-        pygame.draw.rect(window, (0,0,255), newCurrent, width=0)
-        pygame.draw.rect(window, (0,0,0), newCurrent, width=1)
-        pygame.display.update()
+        #newCurrent = pygame.Rect(currentSpace[1]*spaceDim, currentSpace[0]*spaceDim, spaceDim,  spaceDim)
+        #pygame.draw.rect(window, (0,0,255), newCurrent, width=0)
+        #pygame.draw.rect(window, (0,0,0), newCurrent, width=1)
+        #pygame.display.update()
         # Update spacesTraveled and the agent's new location
         spacesTraveled.append(currentSpace)
         agentLocation = currentSpace
@@ -160,11 +160,11 @@ def movementTwo(window, maze, firep, algorithm):
         ####################################################################
         maze, newFires = fireSpread(maze, firep)
         # Color new fire spaces red
-        for space in newFires:
-            newFire = pygame.Rect(space[1]*spaceDim, space[0]*spaceDim, spaceDim, spaceDim)
-            pygame.draw.rect(window, (255,0,0), newFire, width=0)
-            pygame.draw.rect(window, (0,0,0), newFire, width=1)
-            pygame.display.update()
+        #for space in newFires:
+            #newFire = pygame.Rect(space[1]*spaceDim, space[0]*spaceDim, spaceDim, spaceDim)
+            #pygame.draw.rect(window, (255,0,0), newFire, width=0)
+            #pygame.draw.rect(window, (0,0,0), newFire, width=1)
+            #pygame.display.update()
         time.sleep(sleepTime)
         # Agent dies if it catches on fire
         if agentLocation in newFires:

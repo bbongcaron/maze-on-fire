@@ -295,7 +295,7 @@ def strategyThreeWinsVSflammability(dim, numRunsPerQ):
         currentWins = 0
         print("Currently testing q = " + str(q) + "...")
         # Make maze window
-        window = pygame.display.set_mode((size,size))
+        #window = pygame.display.set_mode((size,size))
         for i in range(numRunsPerQ):
             # Generate a random maze
             maze = buildMaze(dim, p, q)
@@ -303,9 +303,9 @@ def strategyThreeWinsVSflammability(dim, numRunsPerQ):
             while DFS(maze) is None or findPathtoFire(maze) is None:
                 maze = buildMaze(dim, p, q)
             # Color maze on pygame window
-            grid(window, maze)
+            #grid(window, maze)
             # Shortest path => a*
-            if movementTwo(window, maze, q, 'a*+') is True:
+            if movementTwo(None, maze, q, 'a*+') is True:
                 currentWins += 1
             # Print percent progress
             percentDone = str((i+1)*100/numRunsPerQ) + "% done..."
