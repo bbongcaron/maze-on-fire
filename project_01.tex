@@ -15,19 +15,57 @@
 \author{Brenton Bongcaron and Abe Vitangcol\\NetIDs: bdb101 and alv88}
 \date{February 19, 2021}
 \begin{document}
-	%\vspace{2in}
-	%\center{\textmd{\textbf{\Large{Introduction to Artificial Intelligence}}}}\\
-	%\center{\textmd{\textbf{\Large{Project 1: Maze on Fire}}}}\\
-	
-	%\center{\textmd{\Large{Professor Wes Cowan}}}\\
-	
-	
-	%\center{\textmd{Due: February 19, 11:59 pm EST}}\\
-	%\center{\textmd{Report and Code Created by:}}\\
-	%\center{\textmd{Brenton Bongcaron and Abe Vitangcol}}
 	\maketitle
 	\pagebreak
+\section{Maze Generation}
+The premise of the project is an agent being trapped in a maze. They start at the top left of the maze and need to get to the very bottom right of the maze. To create the maze environment, we created a function called buildMaze within maze.py which makes the maze in the form of a matrix.
 
-\section{Problem 1}
-Testing
+%INSERT CODE BELOW
+%def buildMaze(dim, p, firep=0):
+    %maze = [ [1 for col in range(dim)] for row in range(dim) ]
+    %# Randomly arranges obstacles
+    %fireTile = False
+    %for i in range(dim):
+    %    for j in range(dim):
+    %        rand = random()
+    %        if rand <= p:
+    %            maze[i][j] = 0
+    %# Randomly selects a fire tile
+    %while True:
+    %    randx = randrange(dim)
+    %    randy = randrange(dim)
+    %    if maze[randx][randy] == 1 and randx != 0 and randx != (dim - 1) and randy != 0 and randy != (dim - 1):
+    %        maze[randx][randy] = 2
+    %        break
+    %# Ensure Start and Goal spaces are empty
+    %maze[0][0] = 1
+    %maze[dim - 1][dim - 1] = 1
+    %return maze
+
+Building the maze needs only a few requirements: the size of the maze (dim), and the obstacle density of the maze (p). The obstacle density is between 0 and 1, exclusive, and our code is ready to output an error message should a value be inputed outside that range. The maze is generated as a matrix with all of its entries, from (0,0) to (dim - 1, dim - 1), are 1. Then, going through each tile one by one using a nested for loop, we used random() as a way to randomize the maze, and if the value obtained from random() was less than or equal to the obstacle density, it became the obstacle, which means the value of the matrix at that coordinate was 0. When it finishes going through all of the tiles of the maze, we need to make sure that (0,0) and (dim - 1, dim - 1) are not obstacles, as they serve as the start and goal spaces, respectfully. So, we simply force these two spaces to be 1 (non-obstacle spaces) so the agent can be loaded in and is able to walk on top of the goal space.
+The other part of this code is for the fire, which simply goes through the entire maze again until it has placed a space for the fire. If the space is a fire, then the maze at that point will equal two. Like the obstacles, if it was created on the start or goal spaces, it will be overwritten for a non-obstacle space.
+	\pagebreak
+\section{Finding the path to the goal: DFS}
+Answer here
+	\pagebreak
+\section{Problem 3}
+Answer here
+	\pagebreak
+\section{Problem 4}
+Answer here
+	\pagebreak
+\section{Problem 5}
+Answer here
+	\pagebreak
+\section{Problem 6}
+Answer here
+	\pagebreak
+\section{Problem 7}
+Answer here
+	\pagebreak
+\section{Problem 8}
+Answer here
+	\pagebreak
+\section{Notable Information}
+Additional things / for fun thing go here
 \end{document}
