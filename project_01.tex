@@ -266,7 +266,25 @@ Figure \ref{BFS-A} depicts the average number of nodes explored by BFS - number 
 
 	\pagebreak
 \section{Time is Everything}
-Requires as large as a system can handle, so I'm letting you handle this Brenton
+The machine used for testing the maximum dimension of a maze that can be solved with DFS, BFS, and A* had the following specs:
+\begin{itemize}
+\item Intel(R) Core(TM) i7-4600M @2.90GHz
+\item 8.00 GB RAM
+\end{itemize}
+The maximum dimension maze that could be solved in $<1$ min using DFS was 504 by 504.\\\\
+The maximum dimension maze that could be solved in $<1$ min using A* was 511 by 511.\\
+
+Since BFS clearly was going to reach a 1 minute time at a smaller dimension than DFS and A* and BFS notably explores more nodes layer by layer rather than probing a specific branch of children, we thought it would be worthwhile to explore the relationship between the dimension of the maze to be BFS'ed and the time elapsed to find the path to the goal.\\
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.5]{dimVStimeBFS_MAX243.PNG}
+\caption{A plot of maze dimension vs. time elapsed in seconds to find the goal with BFS}
+\label{BFStime}
+\end{figure}
+The time it takes to find a path using BFS increases exponentially with respect to the dimension of the maze.
+
+Plots were not generated for DFS and A* because the time elapsed to find the goal with these two algorithms is heavily dependent on probability. With DFS, the less the algorithm has to put children in the north or west directions into the fringe, the shorter the time it takes to find a path to the goal. With A*, the less the algorithm has to put children that are further away from the top left to bottom right diagonal into the fringe, the shorter the time it takes to find a path to the goal.
 	\pagebreak
 \section{This Maze is on Fi-yah: A New Strategy}
 After completing the code for A* and BFS, now it is time to make things a bit more chaotic: set the maze on fire. Previously, there was code regarding the maze being on fire which was previously been brushed off to the side as we were not testing those scenarios yet. Now they become a bit more relevant.
