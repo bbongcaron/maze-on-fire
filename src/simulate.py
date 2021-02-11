@@ -338,6 +338,48 @@ def strategyThreeWinsVSflammability(dim, numRunsPerQ):
     #for xy in zip(flammability, averageSuccesses):
         #ax.annotate('(%s, %s)' % xy, xy=xy, xytext=(xy[0], xy[1]+0.01), xycoords='data')
     plt.show()
+def maxDimOneMin():
+    currentDim = 10
+    timeElapsed = 0
+    p = 0.3
+    print("Max dim w/BFS Testing\n----------------------")
+    dims = []
+    times = []
+    while timeElapsed < 60:
+        currentDim += 1
+        print("Now testing dim = " + str(currentDim) + "...")
+        # Generate a random maze
+        maze = buildMaze(currentDim, p)
+        # Throw maze out if there is no path from start to goal
+        while DFS(maze) is None:
+            print("\tNo path to goal. Generating new maze...")
+            maze = buildMaze(currentDim, p)
+        # Prepare to time
+        start_time = time.time()
+        #DFS(maze)
+        BFS(maze)
+        end_time = time.time()
+        timeElapsed = end_time - start_time
+        dims.append(currentDim)
+        times.append(timeElapsed)
+        print("\ttimeElapsed @dim = " + str(currentDim) + " is " + str(timeElapsed))
+    ## Plot building + settings
+    fig, ax = plt.subplots(figsize=(12,8))
+    plt.rcParams["figure.figsize"] = (40,40)
+    ax.plot(dims, times, marker='o')
+    ax.spines['left'].set_position(('data',10))
+    ax.spines['top'].set_color('none')
+    ax.spines['right'].set_color('none')
+    ax.xaxis.set_ticks_position('bottom')
+    ax.yaxis.set_ticks_position('left')
+    plt.yticks(np.arange(0.0, 60, 5))
+    plt.grid(b=True, which='major')
+    plt.minorticks_on()
+    ax.set_xlabel('Dimension (dim)')
+    ax.set_ylabel("Time Elapsed (s)")
+    #plt.title("Dimension vs Time Elapsed for DFS @p = 0.3")
+    plt.title("Dimension vs Time Elapsed for BFS @p = 0.3")
+    plt.show()
 ##
 #   Driver function
 #
@@ -354,7 +396,8 @@ def main():
     print("\t2. Obstacle Density p vs. (# nodes explored w/BFS - # nodes explored w/A*) [Problem 3]")
     print("\t3. Strategy 1: Flammability q vs. % Success Rate @p = 0.3 [Problem 6]")
     print("\t4. Strategy 2: Flammability q vs. % Success Rate @p = 0.3 [Problem 6]")
-    print("\t5. Strategy 3: Flammability q vs. % Success Rate @p = 0.3 [Problem 6]\n")
+    print("\t5. Strategy 3: Flammability q vs. % Success Rate @p = 0.3 [Problem 6]")
+    print("\t6. Maximum Dimension that can be solved in < 1 min @p = 0.3 [Problem 4]\n")
     selection = int(input("Your Selection > "))
     if selection == 1:
         pVSsuccessRateDFS(dim, numRunsPerX)
@@ -366,7 +409,8 @@ def main():
         strategyTwoWinsVSflammability(dim, numRunsPerX)
     elif selection == 5:
         strategyThreeWinsVSflammability(dim, numRunsPerX)
-
+    elif selection == 6:
+        maxDimOneMin()
 if __name__ == '__main__':
     print("\nTo render and debug a singular maze, run 'render.py'.\nContinuing...\n")
     main()

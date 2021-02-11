@@ -60,16 +60,17 @@ def DFS(maze,start=(0,0),spacesTraveled=[], target=None):
     prev = {start : None}
     if target is None:
         target = (len(maze) - 1, len(maze) - 1)
-    start_time = time.time()
+    #start_time = time.time()
+    #print("\tTime starts now!")
     while fringe:
         (currentRow, currentCol) = fringe.pop()
         ######################################
         # Check the children of currentState #
         ######################################
         if (currentRow, currentCol) == target:
-            end_time = time.time()
-            elapsed_time = end_time - start_time
-            #print(str(elapsed_time) + "s to find path with DFS")
+            #end_time = time.time()
+            #elapsed_time = end_time - start_time
+            #print("\t" + str(elapsed_time) + "s to find path with DFS @dim = " + str(len(maze)))
             return prev
         #upChild
         if isValid(maze, (currentRow - 1, currentCol)) and (currentRow - 1, currentCol) not in visited:
