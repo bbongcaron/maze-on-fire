@@ -17,7 +17,7 @@
 \begin{document}
 	\maketitle
 	\pagebreak
-\section{Maze Generation}
+\section{No Maze is the Same: Creating Mazes}
 The premise of the project is an agent being trapped in a maze. They start at the top left of the maze and need to get to the very bottom right of the maze. To create the maze environment, we created a function called buildMaze within maze.py which makes the maze in the form of a matrix.
 \begin{verbatim}
 def buildMaze(dim, p, firep=0):
@@ -285,7 +285,7 @@ Since BFS clearly was going to reach a 1 minute time at a smaller dimension than
 \end{figure}
 The time it takes to find a path using BFS increases exponentially with respect to the dimension of the maze.
 
-Plots were not generated for DFS and A* because the time elapsed to find the goal with these two algorithms is heavily dependent on probability. With DFS, the less the algorithm has to put children in the north or west directions into the fringe, the shorter the time it takes to find a path to the goal. With A*, the less the algorithm has to put children that are further away from the top left to bottom right diagonal into the fringe, the shorter the time it takes to find a path to the goal.
+Plots were not generated for DFS and A* because the time elapsed to find the goal with these two algorithms is heavily dependent on probability and because of our program freezing upon trying to create a new maze when the original maze doesn't have a path for either the fire or the agent to get to the goal, especially at higher sizes. With DFS, the less the algorithm has to put children in the north or west directions into the fringe, the shorter the time it takes to find a path to the goal. With A*, the less the algorithm has to put children that are further away from the top left to bottom right diagonal into the fringe, the shorter the time it takes to find a path to the goal.
 	\pagebreak
 \section{This Maze is on Fi-yah: A New Strategy}
 After completing the code for A* and BFS, now it is time to make things a bit more chaotic: set the maze on fire. Previously, there was code regarding the maze being on fire which was previously been brushed off to the side as we were not testing those scenarios yet. Now they become a bit more relevant.
@@ -550,10 +550,38 @@ With these two helper codes, we can test both Strategy 1 and 2 using whatever se
 All of these graphs have something in common: they all have a higher success rate with lower flammability rate than at higher probabilities. All of them, with the exception of luck and probability, seem to always fail with a probability of 0.6 or higher. From the looks of it, all of the data is focused on the left (anywhere before a flammability rate of 0.4). Our Strategy 3 seems to have a higher chance of success than the other two as it's curve is relatively high and doesn't fall down as quickly as Strategy 1 or 2. Both Strategy 2 and 3 seem to have a similar shape, and this may be because of how Strategy 3 was simply Strategy 2 but with a modified version of aStar as its main modification. Our Strategy 3 seemed to perform better overall despite having some questionable moves. Sure, it definitely has a better living chance than the other strategies because of the cost factor we created for it, but sometimes it would backtrack or go away from the goal space too much that the fire prevented it from entering in there, resulting in a loss. The cost factor helps it on the earlier ones as to not be engulfed in flames because it got too close, which was a common problem we have observed in testing both Strategy 1 and 2. As for the latter data, such as any flammability rate 0.6 or higher, it is really hard to say as our significant figures in measuring that data wouldn't let us see the potential each strategy had at that specific flammability rate. All that can really be said is that all of them have such minuscule chance of success that it's pretty much a failed run from the start. 
 \pagebreak
 \section{Theoretical Analysis: Unlimited Computational Power}
-Answer here
+One limiting factor about theorizing and testing our algorithms were the computational powers of our devices. Simply put, there were times our devices can't handle the size of the fringes the algorithms needed, especially when it needed it for the bigger maze sizes, one massive example being BFS after exploring practically the entire maze. Another one was our ideas were limited based on what our devices could handle. As such, while we did think about a lot of fun ideas for this simulation, we weren't sure if our devices could handle it well. For instance, our implementation of aStarPlus felt weaker than what we originally thought about, despite having the ability to backtrack and a vision range of 3. It tended to avoid walls or deviate away from the goal unnecessarily because of how it was programmed.
+One such thing we thought about for aStarPlus is actually having it create the path from the start to the goal, but also create multiple alternative paths should one be blocked off, as well as the cost of switching paths should it's current path be unavailable. This would make the agent have a finer looking path instead of what it is currently, and it would also prioritize the different paths based on how dangerous the paths are. For instance, if its current path is blocked off by a fire spreading and closing a gap, the agent would check the other paths and see which of the them were safer, which includes the cost to switch to the path, and take the path which had the minimum threats (which would simply be a priority queue). It would take up a lot of space because of the amount of paths it has to keep track of, but these paths can be removed once the path is deemed impossible for the agent by constantly checking its list of paths and seeing which path is valid. Sure, this will definitely increase the amount of time needed per move as well as the overall run time of aStarPlus, especially when it comes to bigger mazes, but it would be more consistent than it is currently.
+\begin{verbatim}
+#################################################################################
+# Sample functions and added details of what we could've done, with pseudocode. #
+#################################################################################
+
+def pathValid(maze, path):
+    if the path has any node assigned with 0 (obstacle) or 2 (fire)
+        return false
+    return true
+
+in aStarPlus:
+    pathsArr = [list of paths] # Stores all available paths here.
+    pathsCost = [list of path's cost] # Stores the cost of the path here, at the same index.
+    After moving, for all the paths in pathsArr:
+        if pathValid(maze, pathsArr[i]) is false:
+            pathsArr.pop(i)
+        Update pathsArr[i] to make it follow the agent
+    if current path is blocked or impossible:
+        lowestCost = min(pathsCost)
+        index = pathsCost.pop(lowestCost)
+        newPath = pathsArr.pop(index)
+        
+Continue like normal, using newPath until it is no longer available or it reaches the goal.
+\end{verbatim}
+The other fun idea we had was to make this more realistic. For instance, what if fires could go burn down on obstacle at a specific rate, or what if obstacles could be broken down by the agent by spending x amount of turns to break it down? What if the agent's vision range from aStarPlus was actually realistic and wasn't x-ray vision? These thoughts, plus various others, were intriguing ideas we had while working on our code. It would make our program run much slower, but it would be cool to witness and see how the agent would perform at least.
+In general, if we had unlimited computational power, we would probably use it on improving the current aStarPlus and have it consider all possible paths to the goal based on its current position.
 	\pagebreak
 \section{There is No Time to Slack}
-Answer here
+Currently, most of our search algorithms, aside from BFS, take only 1 second to find a path to the goal and reach it, with 1 second being it occurring most of the time, with the occasional 2 seconds based on probability. This is based on our current computational power with a maze size of around 500 x 500. It doesn't take more than 10 seconds to calculate each move, and if it did, it was from render.py having a sleepTime of a large number to visually comprehend the movements the agent made during the test.
+Nonetheless, if we did only have 10 seconds to make a move, we would probably make it run based on gut reaction rather than simply calculating a path every single time. When we mean "gut reaction", we mean to simply check the agent's surrounding nodes and move towards the goal based on the dangers present. The more dangers, the more the agent will avoid it. It would be similar to our aStarPlus implementation and how it checks its nearby neighbors for the goal.
 	\pagebreak
 \section{Notable Information}
 Additional things / for fun thing go here
