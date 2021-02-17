@@ -331,8 +331,9 @@ While it looks like it would perform similar to isValid and doesn't seem necessa
 
 \begin{verbatim}
     def checkCost(maze, checkNode, direction, firep, spacesTraveled):
-    # A helper function to help make any node being checked if it's dangerous or not by adding more cost based on
-    # if it has a fire nearby or wall nearby.
+    # A helper function to help make any node being checked if it's dangerous \\
+    # or not by adding more cost based on if it has a fire nearby \\
+    # or wall nearby.
         addedCost = 0
         if direction == "right":
             if (checkNode[0], checkNode[1]) in spacesTraveled:
@@ -392,7 +393,8 @@ While it looks like it would perform similar to isValid and doesn't seem necessa
 ----(Within each child check, using the right child as an example)----
 ----------------------------------------------------------------------
 			(Euclidean Distance)
-            addedCost = checkCost(maze, (currentRow, currentCol + 1), "right", firep, spacesTraveled)
+            addedCost = checkCost(maze, (currentRow, currentCol + 1), "right",\\
+                                 firep, spacesTraveled)
             nodeCost = math.sqrt(x_squared + y_squared) + addedCost
 			(append stuff occurs here)
 \end{verbatim}
@@ -564,7 +566,7 @@ def pathValid(maze, path):
 
 in aStarPlus:
     pathsArr = [list of paths] # Stores all available paths here.
-    pathsCost = [list of path's cost] # Stores the cost of the path here, at the same index.
+    pathsCost = [list of path's cost] # Stores path cost here, @same index.
     After moving, for all the paths in pathsArr:
         if pathValid(maze, pathsArr[i]) is false:
             pathsArr.pop(i)
@@ -574,7 +576,8 @@ in aStarPlus:
         index = pathsCost.pop(lowestCost)
         newPath = pathsArr.pop(index)
         
-Continue like normal, using newPath until it is no longer available or it reaches the goal.
+Continue like normal, using newPath until it is no longer available\\
+or it reaches the goal.
 \end{verbatim}
 The other fun idea we had was to make this more realistic. For instance, what if fires could go burn down on obstacle at a specific rate, or what if obstacles could be broken down by the agent by spending x amount of turns to break it down? What if the agent's vision range from aStarPlus was actually realistic and wasn't x-ray vision? These thoughts, plus various others, were intriguing ideas we had while working on our code. It would make our program run much slower, but it would be cool to witness and see how the agent would perform at least.
 In general, if we had unlimited computational power, we would probably use it on improving the current aStarPlus and have it consider all possible paths to the goal based on its current position.
