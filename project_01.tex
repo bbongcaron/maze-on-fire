@@ -581,11 +581,9 @@ or it reaches the goal.
 \end{verbatim}
 The other fun idea we had was to make this more realistic. For instance, what if fires could go burn down on obstacle at a specific rate, or what if obstacles could be broken down by the agent by spending x amount of turns to break it down? What if the agent's vision range from aStarPlus was actually realistic and wasn't x-ray vision? These thoughts, plus various others, were intriguing ideas we had while working on our code. It would make our program run much slower, but it would be cool to witness and see how the agent would perform at least.
 In general, if we had unlimited computational power, we would probably use it on improving the current aStarPlus and have it consider all possible paths to the goal based on its current position.
-	\pagebreak
 \section{There is No Time to Slack}
 Currently, most of our search algorithms, aside from BFS, take only 1 second to find a path to the goal and reach it, with 1 second being it occurring most of the time, with the occasional 2 seconds based on probability. This is based on our current computational power with a maze size of around 500 x 500. It doesn't take more than 10 seconds to calculate each move, and if it did, it was from render.py having a sleepTime of a large number to visually comprehend the movements the agent made during the test.
 Nonetheless, if we did only have 10 seconds to make a move, we would probably make it run based on gut reaction rather than simply calculating a path every single time. When we mean "gut reaction", we mean to simply check the agent's surrounding nodes and move towards the goal based on the dangers present. The more dangers, the more the agent will avoid it. It would be similar to our aStarPlus implementation and how it checks its nearby neighbors for the goal.
-	\pagebreak
 \section{Notable Information}
 Crazy how 1 accidental OR instead of an AND can be the different between 2 seconds and 790 second :)
 \end{document}
