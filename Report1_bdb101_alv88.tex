@@ -16,6 +16,7 @@
 \date{February 19, 2021}
 \begin{document}
 	\maketitle
+\textit{We have read and abided by the rules laid out in Canvas, We have not used anyone else's work for my project, and our work is only our own.}
 	\pagebreak
 \section{No Maze is the Same: Creating Mazes}
 The premise of the project is an agent being trapped in a maze. They start at the top left of the maze and need to get to the very bottom right of the maze. To create the maze environment, we created a function called buildMaze within maze.py which makes the maze in the form of a matrix.
@@ -264,7 +265,7 @@ Figure \ref{BFS-A} depicts the average number of nodes explored by BFS - number 
 \label{BFS-A}
 \end{figure}
 
-Take note that if a maze was considered to be impossible, it was still recorded in the data, but now the nodes explored will be 0 as it technically hasn't moved from the start.
+Take note that if a maze has no path from S to G, BFS and A* will have both explored all reachable nodes; therefore the difference between nodes explored by BFS and the nodes explored by A* will be 0.
 	\pagebreak
 \section{Time is Everything}
 The machine used for testing the maximum dimension of a maze that can be solved with DFS, BFS, and A* had the following specs:
@@ -275,8 +276,7 @@ The machine used for testing the maximum dimension of a maze that can be solved 
 The maximum dimension maze that could be solved in $<1$ min using DFS was 504 by 504.\\\\
 The maximum dimension maze that could be solved in $<1$ min using A* was 511 by 511.\\
 
-Since BFS clearly was going to reach a 1 minute time at a smaller dimension than DFS and A* and BFS notably explores more nodes layer by layer rather than probing a specific branch of children, we thought it would be worthwhile to explore the relationship between the dimension of the maze to be BFS'ed and the time elapsed to find the path to the goal.\\
-
+Since BFS clearly was going to reach a 1 minute time at a smaller dimension than DFS and A* and BFS notably explores more nodes layer by layer rather than probing a specific branch of children, we thought it would be worthwhile to explore the relationship between the dimension of the maze to be BFS'ed and the time elapsed to find the path to the goal.
 \begin{figure}[h]
 \centering
 \includegraphics[scale=0.5]{dimVStimeBFS_MAX243.PNG}
@@ -297,7 +297,8 @@ def fireSpread(maze, fireProbability):
     newFires = []
     for currentRow in range(len(maze)):
         for currentCol in range(len(maze)):
-            if isValid(maze, (currentRow, currentCol)) and (currentRow, currentCol) not in newFires:
+            if isValid(maze, (currentRow, currentCol)) and (currentRow,
+                       currentCol) not in newFires:
                 k = 0
                 if isBurning(maze, (currentRow - 1, currentCol)):
                     k += 1
@@ -314,13 +315,14 @@ def fireSpread(maze, fireProbability):
     return newMaze, newFires
 \end{verbatim}
 
-This algorithm takes the current layout of the maze and returns a new layout of the maze where fire spread onto free tiles (any tile represented in the matrix as 1), which is why the maze parameter is necessary. The parameter fireProbability dictates how easily the fire will spread onto its neighbors, between 0 and 1 exclusive. The higher the probability, the higher chance the fire will spread onto its neighbors. To calculate the chance of the fire spreading, we use the formula $1 - (1 - fireProbability)^k)$, where k represents the number of fire tiles neighboring a free tile. After performing random(), if random was less than this calculated number, that free tile turned into fire.
+This algorithm takes the current layout of the maze and returns a new layout of the maze where fire spread onto free tiles (any tile represented in the matrix as 1), which is why the maze parameter is necessary. The parameter fireProbability dictates how easily the fire will spread onto its neighbors, between 0 and 1 exclusive. The higher the probability, the higher chance the fire will spread onto its neighbors. To calculate the chance of the fire spreading, we use the formula $1 - (1 - fireProbability)^k)$, where k represents the \# of fire tiles neighboring a free tile. After performing random(), if random was less than this number, that free tile turned into fire.
 
 With the declaration of a new type of tile comes the need to have another function to help our lost agent to get out safely. As such, we decided to use the same logic as isValid and made another function called isBurning.
 
 \begin{verbatim}
 def isBurning(maze, coordinate):
-        if coordinate[0] < 0 or coordinate[0] >= len(maze) or coordinate[1] < 0 or coordinate[1] >= len(maze):
+        if coordinate[0] < 0 or coordinate[0] >= len(maze) or 
+           coordinate[1] < 0 or coordinate[1] >= len(maze):
             return False
         if maze[coordinate[0]][coordinate[1]] == 2:
             return True
@@ -586,4 +588,12 @@ Currently, most of our search algorithms, aside from BFS, take only 1 second to 
 Nonetheless, if we did only have 10 seconds to make a move, we would probably make it run based on gut reaction rather than simply calculating a path every single time. When we mean "gut reaction", we mean to simply check the agent's surrounding nodes and move towards the goal based on the dangers present. The more dangers, the more the agent will avoid it. It would be similar to our aStarPlus implementation and how it checks its nearby neighbors for the goal.
 \section{Notable Information}
 Crazy how 1 accidental OR instead of an AND can be the different between 2 seconds and 790 second :)
+\pagebreak
+\section{Division of Labor}
+\subsection*{Brenton Bongcaron [bdb101]}
+I handled visualizing the mazes when needed, maze generation (Problem 1), DFS (Problem 2), and anything related to organizing and automating the tests and stages needed to collect the data and its visualization in the form of graphs (Problem 4, Problem 6, second part of Problem 3). 
+
+Since I seemed to have a beefier laptop, I was also in charge of running the data collection process, which I must say took much longer than I expected (like 3 days for everything), and some processes were so long I had to run some of the collection overnight. Although this is probably just due to me performing so many tests at a relatively high dim for each obstacle density interval.
+
+Overall, I say the work was definitely evenly split. No complaints from me. I now pass the mic to Abe Vitangcol, who will be highlighting his share of the work.
 \end{document}
