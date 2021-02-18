@@ -165,7 +165,7 @@ def BFS_AstarVSp(dim, numRunsPerP):
 #   Generates plot for flammability rate q vs. % success rate @q (Problem 6) for Strategy 1
 #
 #   @param dim The given dimension to construct the dim by dim matrix
-#   @param numRunsPerP The number of times a maze is generated and tested for each obstacle density
+#   @param numRunsPerQ The number of times a maze is generated and tested for each flammability rate
 ##
 def strategyOneWinsVSflammability(dim, numRunsPerQ):
     averageSuccesses = []
@@ -224,7 +224,7 @@ def strategyOneWinsVSflammability(dim, numRunsPerQ):
 #   Generates plot for flammability rate q vs. % success rate @q (Problem 6) for Strategy 2
 #
 #   @param dim The given dimension to construct the dim by dim matrix
-#   @param numRunsPerP The number of times a maze is generated and tested for each obstacle density
+#   @param numRunsPerQ The number of times a maze is generated and tested for each flammability rate
 ##
 def strategyTwoWinsVSflammability(dim, numRunsPerQ):
     averageSuccesses = []
@@ -283,7 +283,7 @@ def strategyTwoWinsVSflammability(dim, numRunsPerQ):
 #   Generates plot for flammability rate q vs. % success rate @q (Problem 6) for Strategy 3
 #
 #   @param dim The given dimension to construct the dim by dim matrix
-#   @param numRunsPerP The number of times a maze is generated and tested for each obstacle density
+#   @param numRunsPerQ The number of times a maze is generated and tested for each flammability rate
 ##
 def strategyThreeWinsVSflammability(dim, numRunsPerQ):
     averageSuccesses = []
@@ -338,6 +338,9 @@ def strategyThreeWinsVSflammability(dim, numRunsPerQ):
     #for xy in zip(flammability, averageSuccesses):
         #ax.annotate('(%s, %s)' % xy, xy=xy, xytext=(xy[0], xy[1]+0.01), xycoords='data')
     plt.show()
+##
+#   Determines the largest dim by dim maze that can be solved in under 1 minute (Problem 4)
+##
 def maxDimOneMin():
     currentDim = 10
     timeElapsed = 0
@@ -358,6 +361,7 @@ def maxDimOneMin():
         start_time = time.time()
         #DFS(maze)
         BFS(maze)
+        #aStar(maze)
         end_time = time.time()
         timeElapsed = end_time - start_time
         dims.append(currentDim)
